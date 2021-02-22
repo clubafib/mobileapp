@@ -1,0 +1,468 @@
+/* 
+  Localizable.strings
+  BZZHUB
+
+  Created by Panda on 6/16/20.
+  Copyright © 2020 BZZHUB. All rights reserved.
+*/
+
+// How to Use
+"step1_title"       = "Connect";
+"step1_content"     = "Connect to many companies offering the best Jobs and services near you on BzzHub";
+"step2_title"       = "Global Business";
+"step2_content"     = "Discover Business Categories Around the World";
+"step3_title"       = "Search";
+"step3_content"     = "Discover Restaurants offering the best fast food food near you on Foodwa";
+"Skip"              = "Skip";
+"Next"              = "Next";
+
+// Home Tab
+
+
+
+// Terms & Conditions
+"Terms and Conditions" = "Terms and Conditions";
+"Last Update"           = "Last Update : %@";
+
+// About us
+"About Us" = "About Us";
+
+// Settings
+"Setting"               = "Setting";
+"Notifications"         = "Notifications";
+"Change Language"       = "Change Language";
+"Terms and Policies"    = "Terms & Policies";
+
+// Change Language
+
+// Menu
+"Guest"     = "Guest";
+"Home"      = "Home";
+"Profile"   = "Profile";
+"Contact"   = "Contact";
+"Share"     = "Share";
+"Sign in"   = "Sign in";
+"Sign up"   = "Sign up";
+"Logout"    = "Log out";
+
+// Company List
+"Find Company" = "Find Company";
+"No Results"   = "No Results";
+
+// Search Company
+"Manufactures"      = "Manufactures";
+"Traders"           = "Traders";
+"Service Companies" = "Service Companies";
+"Keywords"          = "Keywords";
+"Sector"            = "Sector";
+"Country"           = "Country";
+"City"              = "City";
+"Search Company"    = "Search Company";
+"Select Placeholder" = "- Select -";
+
+// Company Detail
+"Connect"           = "Connect";
+"Connected"         = "Connected";
+
+// Company Home
+"Overview"          = "Overview";
+"Products"          = "Products";
+"Category"          = "Category";
+"Year Established"  = "Year Established";
+"Website"           = "Website";
+"No Product"        = "No Product";
+"No Category"       = "No Category";
+
+// Company Tender
+"PDF Documents"     = "PDF Documents";
+"No PDF"            = "No PDF";
+
+// Company Media
+"Videos"            = "Videos";
+"Images"            = "Images";
+"No Video"          = "No Video";
+"No Image"          = "No Image";
+
+// Company RFQ
+"RFQ Hint"          = "Complete Your request for Quotation";
+"Name"              = "Name";
+"Phone"             = "Phone";
+"Email"             = "Email";
+"Products_Keyword"  = "Products/Keyword";
+"Sub Category"      = "Sub Category";
+"Product Detailed"  = "Product Detailed Specification";
+"Quantity"          = "Quantity";
+"Upload Attachments" = "Upload attachments";
+"Upload"            = "Upload";
+"Submit"            = "Submit";
+"Unit"              = "Unit";
+"Pieces"            = "Pieces";
+
+
+// Login
+"Welcome"           = "WELCOME BACK!";
+"Member"            = "Member";
+"Company"           = "Company";
+"Email Address"     = "Email Address";
+"Password"          = "Password";
+"Remember Me"       = "Remember Me";
+"Forgot Password"   = "Forgot Password?";
+"OR"                = "OR";
+"Facebook"          = "Facebook";
+"Login"             = "Login";
+"No Account"        = "Don't have an account?";
+"Join Us"           = "JOIN US";
+
+// Sign up
+"SignUp Title"      = "SIGN UP";
+"Company Name"      = "Company Name*";
+"Category_S"        = "Category*";
+"Business Category_S"    = "Business Category*";
+"Name_S"            = "Name*";
+"Email_S"           = "Email*";
+"Mobile_S"          = "Mobile*";
+"Password_S"        = "Password*";
+"Confirm Password_S" = "Confirm Password*";
+"Join Now"          = "Join Now";
+"Or Sign In"        = "Or Sign in";
+"Accept Terms"      = "I accept the Tmam Hub Privacy Policy (including the use of cookies) and the terms & Conditions.";
+"Terms Conditions Link"  = "Terms & Conditions";
+
+
+"Enter Name"                                 = "Enter Name";
+"Enter Company Name"                         = "Enter Company Name";
+"Choose Business Category"                   = "Choose Business Category";
+"Enter Email Address"                        = "Enter Email Address";
+"Invalid Email Address"                      = "Invalid Email Address";
+"Enter Mobile"                               = "Enter Mobile";
+"Enter Password"                             = "Enter Password";
+"Invalid Password"                           = "Password should have 4 charactors at least";
+"Enter Confirm Password"                     = "Enter Confirm Password";
+"Password no match"                          = "Password doesn't match";
+"Confimr Terms Conditions"                   = "Please accept the terms and Conditions";
+
+// Forgot Password
+"Change Password"          = "CHANGE PASSWORD";
+
+// Email Link
+"Email Link Sent"        = "Email Link Sent";
+"Email Hint"             = "Please check your email for password reset instructions";
+"Continue"               = "Continue";
+
+// Verification Code
+"Enter Verification Code"       = "Enter Verification Code";
+"Verification Code"             = "Verification Code";
+
+// Reset Password
+"Enter New Password"         = "Enter New Password";
+"Enter Confirm New Password" = "Enter Confirm New Password";
+"Reset Your Password"        = "RESET YOUR PASSWORD";
+"New Password"               = "New Password";
+"Confirm New Password"       = "Confirm New Password";
+"Login Again"                = "Login again";
+"Change Password Success"    = "Password has been changed successfully";
+
+
+// Home Tab
+"Tab_Companies"              = "Companies";
+"Tab_Communities"            = "Communities";
+"Tab_Jobs"                   = "Jobs";
+"Tab_Media"                  = "Media";
+
+
+// Community List
+"Find Community"            = "Find Community";
+
+// Discussions
+"Create Thread"             = "Create Thread";
+
+// Community Media
+"Add video"         = "Add Video";
+"Add photo"         = "Add Photo";
+
+// Search Community
+"Networking"        = "Networking";
+"Members"           = "Members";
+"University"        = "University";
+"School"            = "School";
+"Interest"          = "Interest";
+"Search"            = "Search";
+"Search Community"  = "Search Community";
+"Search Member"     = "Search Member";
+
+// Member Home
+"Membership Status" = "Membership Status";
+"Languages"         = "Languages";
+"Work"              = "Work";
+"Friends"           = "Friends";
+"Interests"         = "Interests";
+"Groups"            = "Groups";
+"No Group"          = "No Group";
+"No Interest"       = "No Interest";
+"No Friend"         = "No Friend";
+
+// Member Job
+"No Job"            = "No Job";
+
+// Community Detail
+"About"             = "About";
+"Activities"        = "Activities";
+"Add Event"         = "Add Event";
+
+// Add Group
+"Add Group"         = "Add Group";
+"Edit Group"        = "Edit Group";
+"Add"               = "Add";
+"Group Title"       = "Group Title";
+"Description"       = "Description";
+"Upload Group Cover"  = "Upload Group Cover";
+
+"Camera"            = "Camera";
+"Gallery"           = "Gallery";
+"Cancel"            = "Cancel";
+"Choose Option"     = "Choose Option";
+"Enter Group Title" = "Enter Group Title";
+"Enter Group Description" = "Enter Group Description";
+"Choose Sector"     = "Choose Sector";
+"Choose City"       = "Choose City";
+"Choose Cover"      = "Choose Cover";
+"Image is selected" = "Image is selected";
+
+// Delete Group
+"Delete Group"      = "Delete Group";
+"Delete Group Msg"  = "Delete this group?";
+"Yes"               = "Yes";
+
+// Event Detail
+"Venue"             = "Venue";
+
+// Add Feed
+"Add Feed"          = "Add Feed";
+"Group"             = "Group";
+"Feed Title"        = "Feed Title";
+"Upload Feed Photo" = "Upload Feed Photo";
+"Cover Image Hint"  = "Cover image has to have dimension 562x131";
+"Choose Group"      = "Choose Group";
+"Enter Feed Title"  = "Enter Feed Title";
+"Enter Feed Description" = "Enter Feed Description";
+"Add File"          = "Add File";
+
+// Add Thread
+"Add Thread"        = "Add Thread";
+"Subject"           = "Subject";
+"Text"              = "Text";
+"Enter Thread Subject" = "Enter Thread Subject";
+"Enter Thread Text" = "Enter Thread Text";
+
+// Add video
+"Keyword"           = "Keyword";
+"Enter Youtube Url" = "Enter Youtube Url";
+"Show Public Videos" = "Show in public videos";
+"Enter Keyword"     = "Enter Keyword";
+
+// Add Image
+"Select File"       = "Select File";
+"Add Image"         = "Add Image";
+
+// Feed Detail
+"Write Your Comment"    = "Write your comment...";
+
+// Discussion Detail
+"Thread"            = "Thread";
+
+// Community Add Event
+"Event Title"         = "Event Title";
+"Date"                = "Date";
+"Time"                = "Time";
+"Cover Image"         = "Cover Image";
+"Delete"              = "Delete";
+"Update"              = "Update";
+"About_Venue"         = "About & Venue";
+"Edit Event"          = "Edit Event";
+"Done"                = "Done";
+
+"Choose Date"       = "Choose Date";
+"Choose Time"       = "Choose Time";
+
+// Delete Event
+"Delete Event"      = "Delete Event";
+"Delete Event Msg"  = "Delete this event?";
+
+// Chat
+"Write Your Message" = "Write your message...";
+
+// Job List
+"Find Job"          = "Find Job";
+
+// Search Job
+"Applicants"        = "Applicants";
+"Companies"         = "Companies";
+"Search Job"        = "Search Job";
+"Mail services are not available" = "Mail services are not available";
+
+// Media List
+"Find Media"        = "Find Media";
+"Search Results"    = "Search Results";
+
+// Request Auth
+"You have to"       = "You have to";
+
+// Profile
+"Hide"              = "Hide";
+
+// Profile Update
+"Update Your Photo" = "Update Your Photo";
+"Banner Photo"      = "Banner Photo";
+"Save"              = "Save";
+
+// Profile Member Interests
+"Select Your Interest"  = "Select Your Interest";
+"Find Your Interest"    = "Find Your Interest";
+
+"Add More"              = "  + Add More  ";
+"Edit"                  = "Edit";
+"Save_Button"           = "   Save   ";
+
+
+"Your email will be hidden" = "Your email will be hidden";
+"Your phone will be hidden" = "Your phone will be hidden";
+"Your school will be hidden" = "Your school will be hidden";
+"Your university will be hidden" = "Your university will be hidden";
+"Your work will be hidden"  = "Your work will be hidden";
+
+// Profile Add Feed
+"Feed Description"  = "Feed Description";
+"Post"              = "Post";
+"Enter Feed Description" = "Enter Feed Description";
+
+// Delete Feed
+"Delete Feed"       = "Delete Feed";
+"Delete Feed Msg"   = "Delete this post?";
+
+// Friend Request
+"Pending Requests"   = "Pending Requests";
+"Contact Suggestion" = "Contact Suggestion";
+"Sent Requests"      = "Sent Requests";
+"No Pending Request" = "No Pending Request";
+"No Contact Suggestion" = "No Contact Suggestion";
+"No Sent Request"    = "No Sent Request";
+
+"Contact Success Msg" = "User Contact have been added successfully";
+"Request Success Msg" = "Request have been sent successfully";
+"Accept"              = "Accept";
+
+
+"Visitor Number" = "Visitors Number %@";
+
+// Add Job
+"Add Job"         = "Add Job";
+"Edit Job"        = "Edit Job";
+"Job Title"       = "Job Title";
+"Job Type"        = "Job Type";
+"Job Category"    = "Job Category";
+"Job Description" = "Job Description";
+
+"Enter Job Title" = "Enter Job Title";
+"Enter Job Description" = "Enter Job Description";
+"Choose Category"       = "Choose Category";
+
+"Category_Sectors"  = "Category/Sectors";
+"No Sector"         = "No Sector";
+
+"Select Your Sector" = "Select Your Sector";
+"Find Sector"        = "Find Your Category/Sector";
+
+// Add Tender
+"Add Tender"        = "Add Tender";
+"File is selected"  = "File is selected";
+
+// Delete Tender
+"Delete Tender"     = "Delete Tender";
+"Delete Tender Msg" = "Delete this tender?";
+
+// Profile Add Job
+"Enter Age"         = "Enter Age";
+"Enter No. of Vacancies" = "Enter No. of Vacancies";
+"Choose Application Start Date" = "Choose Application Start Date";
+"Choose Application End Date" = "Choose Application End Date";
+"Choose Type"       = "Choose Type";
+"Enter Salary"      = "Enter Salary";
+"Choose Country"    = "Choose Country";
+
+"Salary"            = "Salary";
+"Age"               = "Age";
+"No_Vacancies"      = "No. of Vacancies";
+"Application Start Date" = "Application Start Date";
+"Application End Date" = "Application End Date";
+
+"No Connection"     = "No Connection";
+"Choose Company"    = "Choose Company";
+
+"No RFQ"            = "No RFQ";
+
+// Profile RFQ Detail
+"Product Detailed Specification" = "Product Detailed Specification";
+"Attachments"    = "Attachments";
+
+// Profile Add product
+"Add Product"       = "Add Product";
+"Edit Product"      = "Edit Product";
+"Product Title"     = "Product Title";
+"Price"             = "Price";
+"Product Features and Description" = "Product Features and Description";
+"Colors"            = "Colors";
+"Sizes"             = "Sizes";
+"Upload Product Images" = "Upload Product Images";
+"Upload Images Limit" = "* Maximum 3 files";
+"Plus Add"          = "+Add";
+"Enter Price"       = "Enter Price";
+"Enter Title"       = "Enter Title";
+"Add Colors"        = "Add Colors";
+"Add Sizes"         = "Add Sizes";
+"Enter Description" = "Enter Description";
+"Add Product Image" = "Add Product Image";
+
+// Add Attributes
+"Add Attributes"    = "Add Attributes";
+"Product Colors"    = "Product Colors";
+"Product Sizes"     = "Product Sizes";
+
+// Profile Delete Media
+"Delete Media"      = "Delete Media";
+"Delete Media Msg"  = "Delete this media?";
+"Delete Video"      = "Delete Video";
+"Delete Image"      = "Delete Image";
+"Delete Video Msg"  = "Delete this video?";
+"Delete Image Msg"  = "Delete this image?";
+
+// Profile Delete Job
+"Delete Job"        = "Delete Job";
+"Delete Job Msg"    = "Delete Job Msg";
+
+// Profile Update Company
+"Established Year"      = "Established Year";
+"Type Business"         = "Type of Business";
+"Business Category"     = "Business Category";
+"Post Code"             = "Post Code";
+"Landline"              = "Landline";
+"Update Profile"        = "Update Profile";
+
+// Product Details
+"New Collection"        = "New Collection";
+"Packaging_Shipping"    = "Packaging & Shipping";
+
+// Profile Delete Product
+"Delete Product"        = "Delete Product";
+"Delete Product Msg"    = "Delete this product";
+
+// Profile Update Member
+"Phone Number"          = "Phone Number*";
+"Enter Phone Number"    = "Enter Phone Number";
+
+// Delete Interest
+"Delete Interest"       = "Delete Interest";
+"Delete Interest Msg"   = "Delete this interest?";
+
+// Delete Sector
+"Delete Sector"         = "Delete Sector";
+"Delete Sector Msg"     = "Delete Sector Msg";

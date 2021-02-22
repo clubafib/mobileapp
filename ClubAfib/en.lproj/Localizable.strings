@@ -1,0 +1,111 @@
+/* 
+  Localizable.strings
+  ClubAfib
+
+  Created by Rener on 7/20/20.
+  Copyright © 2020 ETU. All rights reserved.
+*/
+
+
+// Login
+"Welcome"                       = "WELCOME BACK!";
+"Email Address"                 = "Email Address";
+"Password"                      = "Password";
+"Remember Me"                   = "Remember Me";
+"Forgot Password"               = "Forgot Password?";
+"OR"                            = "OR";
+"Sign In with Facebook"         = "Sign In with Facebook";
+"Sign In with Google"           = "Sign In with Google";
+"Sign In"                       = "Sign In";
+"No Account"                    = "Don't have an account?";
+
+// Sign up
+"SignUp Title"                  = "SIGN UP";
+"FirstName_S"                   = "First Name*";
+"LastName_S"                    = "Last Name*";
+"Username_S"                    = "Username*";
+"Email_S"                       = "Email*";
+"Mobile_S"                      = "Phone Number*";
+"Password_S"                    = "Password*";
+"Confirm Password_S"            = "Confirm Password*";
+"Sign Up"                       = "Sign Up";
+"Accept Terms"                  = "I accept the Privacy Policy (including the use of cookies) and the terms & Conditions.";
+"Terms and Conditions"         = "Terms & Conditions";
+
+
+"Enter First Name"              = "Enter First Name";
+"Enter Last Name"               = "Enter Last Name";
+"Enter Username"                = "Enter Username";
+"Invalid Username"              = "Username should be 4 to 20 characters and should not contain spaces or special characters";
+"Enter Email Address"           = "Enter Email Address";
+"Invalid Email Address"         = "Invalid Email Address";
+"Enter Phone Number"            = "Enter Phone Number";
+"Invalid Phone Number"          = "Invalid Phone Number";
+"Enter Password"                = "Enter Password";
+"Invalid Password length"       = "Password must contain at least 8 characters";
+"Invalid Password"              = "Password should contain at least one capital character, one special character and one numerical character";
+"Enter Confirm Password"        = "Enter Confirm Password";
+"Password no match"             = "Password doesn't match";
+"Confirm Terms Conditions"      = "Please accept the Terms and Conditions";
+
+// Forgot Password
+"Change Password"               = "CHANGE PASSWORD";
+"Next"                          = "Next";
+
+// Email Link
+"Email Link Sent"               = "Email Link Sent";
+"Email Hint"                    = "Please check your email for password reset instructions";
+"Continue"                      = "Continue";
+
+// Verification Code
+"Enter Verification Code"       = "Enter Verification Code";
+"Verification Code"             = "Verification Code";
+
+// Reset Password
+"Enter New Password"            = "Enter New Password";
+"Enter Confirm New Password"    = "Enter Confirm New Password";
+"Reset Your Password"           = "RESET YOUR PASSWORD";
+"New Password"                  = "New Password";
+"Confirm New Password"          = "Confirm New Password";
+"Login Again"                   = "Login again";
+"Change Password Success"       = "Password has been changed successfully";
+
+
+// Menu
+"About Us"                      = "About Us";
+"Home"                          = "Home";
+"Profile"                       = "Profile";
+"Contact"                       = "Contact";
+"Terms of Service"              = "Terms of Service";
+"Privacy Policy"                = "Privacy Policy";
+"Share"                         = "Share";
+"Logout"                        = "Log out";
+
+
+// Health cateogry
+"Activity"                      = "Activity";
+"Body Measurements"             = "Body Measurements";
+"Body Weight"                   = "Body Weight";
+"Steps"                         = "Steps";
+"Sleep"                         = "Sleep";
+"Alcohol Use"                   = "Alcohol Use";
+"Blood Pressure"                = "Blood Pressure";
+
+
+// Charts
+"TOTAL"                         = "TOTAL";
+"AVERAGE"                       = "AVERAGE";
+"DAILY AVERAGE"                 = "DAILY AVERAGE";
+"TODAY"                         = "TODAY";
+"LAST"                          = "LAST";
+"NO DATA"                       = "NO DATA";
+
+"RANGE"                         = "RANGE";
+"IN BED AVERAGE"                = "IN BED AVERAGE";
+"ASLEEP AVERAGE"                = "ASLEEP AVERAGE";
+"SYSTOLIC"                      = "SYSTOLIC";
+"DIASTOLIC"                     = "DIASTOLIC";
+
+
+// Profile
+"No Feedback"                   = "No Feedback";

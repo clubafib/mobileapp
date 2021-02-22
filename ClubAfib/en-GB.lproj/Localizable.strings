@@ -1,0 +1,67 @@
+/* 
+  Localizable.strings
+  ClubAfib
+
+  Created by Rener on 7/20/20.
+  Copyright © 2020 ETU. All rights reserved.
+*/
+
+
+// Login
+"Welcome"                       = "WELCOME BACK!";
+"Email Address"                 = "Email Address";
+"Password"                      = "Password";
+"Remember Me"                   = "Remember Me";
+"Forgot Password"               = "Forgot Password?";
+"OR"                            = "OR";
+"Facebook"                      = "Facebook";
+"Google"                        = "Google";
+"Login"                         = "Sign In";
+"No Account"                    = "Don't have an account?";
+"Join Us"                       = "JOIN US";
+
+// Sign up
+"SignUp Title"                  = "SIGN UP";
+"Name_S"                        = "Name*";
+"Email_S"                       = "Email*";
+"Mobile_S"                      = "Mobile*";
+"Password_S"                    = "Password*";
+"Confirm Password_S"            = "Confirm Password*";
+"Join Now"                      = "Join Now";
+"Or Sign In"                    = "Or Sign in";
+"Accept Terms"                  = "I accept the Tmam Hub Privacy Policy (including the use of cookies) and the terms & Conditions.";
+"Terms Conditions Link"         = "Terms & Conditions";
+
+
+"Enter Name"                                 = "Enter Name";
+"Enter Company Name"                         = "Enter Company Name";
+"Choose Business Category"                   = "Choose Business Category";
+"Enter Email Address"                        = "Enter Email Address";
+"Invalid Email Address"                      = "Invalid Email Address";
+"Enter Mobile"                               = "Enter Mobile";
+"Enter Password"                             = "Enter Password";
+"Invalid Password"                           = "Password should have 4 charactors at least";
+"Enter Confirm Password"                     = "Enter Confirm Password";
+"Password no match"                          = "Password doesn't match";
+"Confimr Terms Conditions"                   = "Please accept the terms and Conditions";
+
+// Forgot Password
+"Change Password"               = "CHANGE PASSWORD";
+
+// Email Link
+"Email Link Sent"               = "Email Link Sent";
+"Email Hint"                    = "Please check your email for password reset instructions";
+"Continue"                      = "Continue";
+
+// Verification Code
+"Enter Verification Code"       = "Enter Verification Code";
+"Verification Code"             = "Verification Code";
+
+// Reset Password
+"Enter New Password"            = "Enter New Password";
+"Enter Confirm New Password"    = "Enter Confirm New Password";
+"Reset Your Password"           = "RESET YOUR PASSWORD";
+"New Password"                  = "New Password";
+"Confirm New Password"          = "Confirm New Password";
+"Login Again"                   = "Login again";
+"Change Password Success"       = "Password has been changed successfully";

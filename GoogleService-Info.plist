@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>469629177922-j83v466r4noajnd2uljmjom5eli4981e.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.469629177922-j83v466r4noajnd2uljmjom5eli4981e</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA3sphtwO_c01zMi-aISyyoKW4Ec7PRCGk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>469629177922</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.etu.ClubAfib</string>
+	<key>PROJECT_ID</key>
+	<string>clubafib-6104a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>clubafib-6104a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:469629177922:ios:8146c5d7f12b8065a19ddb</string>
+	<key>DATABASE_URL</key>
+	<string>https://clubafib-6104a.firebaseio.com</string>
+</dict>
+</plist>
