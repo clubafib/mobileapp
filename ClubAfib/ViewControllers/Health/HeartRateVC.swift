@@ -390,7 +390,9 @@ class HeartRateVC: UIViewController {
     }
     
     @objc private func healthDataChanged(notification: NSNotification){
-        self.getHeartRates()
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.getHeartRates()
+        }
     }
     
     private func initDates() {
