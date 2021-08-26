@@ -115,7 +115,7 @@ class CellEcgCharts:UITableViewCell {
         let df = DateFormatter()
         df.dateFormat = "MM/dd/yyyy, hh:mm a"
         lblTime.text = df.string(from: data.date)
-        vwChart.setData(data.voltages)
+//        vwChart.setData(data.voltages)
     }
 }
 

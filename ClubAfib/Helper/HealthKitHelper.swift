@@ -978,7 +978,7 @@ class HealthKitHelper {
                             }
                             
                             ecgitem.time = value.timeSinceSampleStart
-                            ecg.voltages.append(ecgitem)
+//                            ecg.voltages.append(ecgitem)
                         case .done:
                             group.leave()
                             break

@@ -31,7 +31,7 @@ class Ecg : Codable {
     }
     var dateTxt = "1970-01-01 00:00:00"
     var avgHeartRate:Double = 0
-    var voltages = [EcgItem]()
+//    var voltages = [EcgItem]()
     var file_url = ""
     
     var status = 0
@@ -58,60 +58,60 @@ class Ecg : Codable {
         if let fileName = UserDefaults.standard.string(forKey: self.file_url) {
             let filePath = getDocumentsDirectory().appendingPathComponent(fileName)
             if FileManager.default.fileExists(atPath: filePath.path) {
-                if let data = try? Data(contentsOf: filePath) {
-                    self.setVoltagesFromData(data)
+//                if let data = try? Data(contentsOf: filePath) {
+//                    self.setVoltagesFromData(data)
                     return
-                }
+//                }
             }
         }
         let fileName = UUID().uuidString
         let filePath = getDocumentsDirectory().appendingPathComponent(fileName)
-        if voltages.count > 0 {
-            let data = getVoltageData()
-            try? data.write(to: filePath)
-            UserDefaults.standard.setValue(fileName, forKey: self.file_url)
-            return
-        }
+//        if voltages.count > 0 {
+//            let data = getVoltageData()
+//            try? data.write(to: filePath)
+//            UserDefaults.standard.setValue(fileName, forKey: self.file_url)
+//            return
+//        }
         DispatchQueue.global(qos: .background).async {
             if let data = try? Data(contentsOf: URL(string: self.file_url)!) {
                 try? data.write(to: filePath)
                 UserDefaults.standard.setValue(fileName, forKey: self.file_url)
-                self.setVoltagesFromData(data)
+//                self.setVoltagesFromData(data)
             }
         }        
     }
     
     public func getVoltageData() -> Data {
-        var array = [UInt8]()
-        for item in voltages {
-            array.append(contentsOf: ByteBackpacker.pack(item.time))
-            array.append(contentsOf: ByteBackpacker.pack(item.value))
-        }
+        let array = [UInt8]()
+//        for item in voltages {
+//            array.append(contentsOf: ByteBackpacker.pack(item.time))
+//            array.append(contentsOf: ByteBackpacker.pack(item.value))
+//        }
         var data = Data()
         data.append(contentsOf: array)        
         return data
     }
     
-    func setVoltagesFromData(_ data:Data) {
-        self.voltages.removeAll()
-        let byteAry = [Byte](data)
-        let cnt = byteAry.count / 16
-        for i in 0..<cnt {
-            let idx = i * 16
-            var bytes = Array(byteAry[idx..<(idx + 8)])
-            let time = ByteBackpacker.unpack(bytes) as Double
-            bytes = Array(byteAry[(idx + 8)..<(idx + 16)])
-            let value = ByteBackpacker.unpack(bytes) as Double
-            let ecgItem = EcgItem(time, value: value)
-            self.voltages.append(ecgItem)
-        }
-    }
+//    func setVoltagesFromData(_ data:Data) {
+//        self.voltages.removeAll()
+//        let byteAry = [Byte](data)
+//        let cnt = byteAry.count / 16
+//        for i in 0..<cnt {
+//            let idx = i * 16
+//            var bytes = Array(byteAry[idx..<(idx + 8)])
+//            let time = ByteBackpacker.unpack(bytes) as Double
+//            bytes = Array(byteAry[(idx + 8)..<(idx + 16)])
+//            let value = ByteBackpacker.unpack(bytes) as Double
+//            let ecgItem = EcgItem(time, value: value)
+//            self.voltages.append(ecgItem)
+//        }
+//    }
     
     ///////////////// Static Methods ////////////////////
     class func set(_ data: [Ecg]) {
-        data.forEach { (item) in
-            item.voltages.removeAll()
-        }
+//        data.forEach { (item) in
+//            item.voltages.removeAll()
+//        }
         
         let encoder = JSONEncoder()
         let json = try? encoder.encode(data)
