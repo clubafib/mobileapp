@@ -116,11 +116,19 @@ class HeartRateVC: UIViewController {
         initChartView()
         initEcgCharts()
         initDates()
-        getHeartRates()
-        getECGData()
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.getHeartRates()
+            self.getECGData()
+            DispatchQueue.main.async {
+                self.dismissLoadingProgress(view: self.navigationController?.view)
+            }
+        }
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
-    }
+    
+        showLoadingProgress(view: self.navigationController?.view)
+}
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -431,13 +439,17 @@ class HeartRateVC: UIViewController {
     private func getHeartRates() {
         self.m_hrData = HealthDataManager.default.heartRateData
         self.processDataset()
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     private func getECGData(){
         self.ecgData = HealthDataManager.default.ecgData
         self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     func resetStartDate(){
