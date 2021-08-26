@@ -179,7 +179,9 @@ class StepsVC: UIViewController {
     private func getStepCounts() {
         let stepsData = HealthDataManager.default.stepsData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
         self.processDataset(stepsData)
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     func resetStartDate(){
@@ -321,7 +323,9 @@ class StepsVC: UIViewController {
     private func getECGData(){
         self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
         self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     private func processECGDataset() {

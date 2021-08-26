@@ -189,13 +189,17 @@ class BloodAlcoholContentVC: UIViewController {
     private func getHeartRates() {
         let heartRateData = HealthDataManager.default.heartRateData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
         self.processDataset(heartRateData, healthType: .HeartRate)
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     private func getBloodAlcoholContent() {
         let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
         self.processDataset(alcoholUseData, healthType: .BloodAlcoholContent)
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     private func processDataset(_ dataset: [SingleValueHealthData], healthType: HealthCategoryType) {

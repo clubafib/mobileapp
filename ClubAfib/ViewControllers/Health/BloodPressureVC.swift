@@ -201,7 +201,9 @@ class BloodPressureVC: UIViewController {
     private func getBloodPressure() {
         let bloodPressureData = HealthDataManager.default.bloodPressureData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
         self.processBloodPressureDataset(bloodPressureData)
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     func resetStartDate(){
@@ -369,7 +371,9 @@ class BloodPressureVC: UIViewController {
     private func getECGData(){
         self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
         self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     private func processECGDataset() {

@@ -188,7 +188,9 @@ class AlcoholUseVC: UIViewController {
     private func getAlcoholUses() {
         let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
         self.processDataset(alcoholUseData, healthType: .AlcoholUse)
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     func resetStartDate(){
@@ -350,7 +352,9 @@ class AlcoholUseVC: UIViewController {
     private func getECGData(){
         self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
         self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     private func processECGDataset() {

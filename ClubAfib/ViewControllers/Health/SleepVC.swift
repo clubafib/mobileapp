@@ -200,7 +200,9 @@ class SleepVC: UIViewController {
         let asleep = sleepData.filter({ $0.type == 1 })
         self.processSleepDataset(inBed, inBed: true)
         self.processSleepDataset(asleep, inBed: false)
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     func resetStartDate(){
@@ -327,7 +329,9 @@ class SleepVC: UIViewController {
     private func getECGData(){
         self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
         self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.main.async {
+            self.resetChartView()
+        }
     }
     
     private func processECGDataset() {
