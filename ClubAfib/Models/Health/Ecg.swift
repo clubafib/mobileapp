@@ -82,31 +82,43 @@ class Ecg : Codable {
     }
     
     public func getVoltageData() -> Data {
-        let array = [UInt8]()
+//        var array = [UInt8]()
 //        for item in voltages {
 //            array.append(contentsOf: ByteBackpacker.pack(item.time))
 //            array.append(contentsOf: ByteBackpacker.pack(item.value))
 //        }
-        var data = Data()
-        data.append(contentsOf: array)        
-        return data
+//        var data = Data()
+//        data.append(contentsOf: array)
+//        return data
+        if let fileName = UserDefaults.standard.string(forKey: self.file_url) {
+            let filePath = getDocumentsDirectory().appendingPathComponent(fileName)
+            if FileManager.default.fileExists(atPath: filePath.path) {
+                if let data = try? Data(contentsOf: filePath) {
+                    return data
+                }
+            }
+        }
+        return Data()
     }
     
-//    func setVoltagesFromData(_ data:Data) {
+    func getVoltagesFromData(_ data:Data) -> [EcgItem] {
 //        self.voltages.removeAll()
-//        let byteAry = [Byte](data)
-//        let cnt = byteAry.count / 16
-//        for i in 0..<cnt {
-//            let idx = i * 16
-//            var bytes = Array(byteAry[idx..<(idx + 8)])
-//            let time = ByteBackpacker.unpack(bytes) as Double
-//            bytes = Array(byteAry[(idx + 8)..<(idx + 16)])
-//            let value = ByteBackpacker.unpack(bytes) as Double
-//            let ecgItem = EcgItem(time, value: value)
+        var array = [EcgItem]()
+        let byteAry = [Byte](data)
+        let cnt = byteAry.count / 16
+        for i in 0..<cnt {
+            let idx = i * 16
+            var bytes = Array(byteAry[idx..<(idx + 8)])
+            let time = ByteBackpacker.unpack(bytes) as Double
+            bytes = Array(byteAry[(idx + 8)..<(idx + 16)])
+            let value = ByteBackpacker.unpack(bytes) as Double
+            let ecgItem = EcgItem(time, value: value)
 //            self.voltages.append(ecgItem)
-//        }
-//    }
-    
+            array.append(ecgItem)
+        }
+        return array
+    }
+
     ///////////////// Static Methods ////////////////////
     class func set(_ data: [Ecg]) {
 //        data.forEach { (item) in
