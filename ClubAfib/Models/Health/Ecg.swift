@@ -73,12 +73,14 @@ class Ecg : Codable {
 //            return
 //        }
         DispatchQueue.global(qos: .background).async {
-            if let data = try? Data(contentsOf: URL(string: self.file_url)!) {
-                try? data.write(to: filePath)
-                UserDefaults.standard.setValue(fileName, forKey: self.file_url)
-//                self.setVoltagesFromData(data)
+            if let url =  URL(string: self.file_url) {
+                if let data = try? Data(contentsOf:url) {
+                    try? data.write(to: filePath)
+                    UserDefaults.standard.setValue(fileName, forKey: self.file_url)
+                    //                self.setVoltagesFromData(data)
+                }
             }
-        }        
+        }
     }
     
     public func getVoltageData() -> Data {
