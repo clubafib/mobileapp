@@ -1547,7 +1547,7 @@ class ApiManager: NSObject {
                         var ecgs = [Ecg]()
                         for item in data {
                             let ecg = Ecg(item)
-                            ecg.setVoltages()
+//                            ecg.setVoltages()
                             ecgs.append(ecg)
                         }
                         

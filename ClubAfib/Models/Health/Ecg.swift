@@ -53,7 +53,8 @@ class Ecg : Codable {
     init() {
         
     }
-    
+
+    /*
     public func setVoltages() {
         if let fileName = UserDefaults.standard.string(forKey: self.file_url) {
             let filePath = getDocumentsDirectory().appendingPathComponent(fileName)
@@ -82,6 +83,7 @@ class Ecg : Codable {
             }
         }
     }
+    */
     
     public func getVoltageData() -> Data {
 //        var array = [UInt8]()
@@ -92,12 +94,17 @@ class Ecg : Codable {
 //        var data = Data()
 //        data.append(contentsOf: array)
 //        return data
-        if let fileName = UserDefaults.standard.string(forKey: self.file_url) {
-            let filePath = getDocumentsDirectory().appendingPathComponent(fileName)
-            if FileManager.default.fileExists(atPath: filePath.path) {
-                if let data = try? Data(contentsOf: filePath) {
-                    return data
-                }
+//        if let fileName = UserDefaults.standard.string(forKey: self.file_url) {
+//            let filePath = getDocumentsDirectory().appendingPathComponent(fileName)
+//            if FileManager.default.fileExists(atPath: filePath.path) {
+//                if let data = try? Data(contentsOf: filePath) {
+//                    return data
+//                }
+//            }
+//        }
+        if let url =  URL(string: self.file_url) {
+            if let data = try? Data(contentsOf:url) {
+                return data
             }
         }
         return Data()
@@ -139,9 +146,9 @@ class Ecg : Codable {
             let json = try Data(contentsOf: filename)
             let decoder = JSONDecoder()
             if let ret = try? decoder.decode([Ecg].self, from: json) {
-                ret.forEach { (item) in
-                    item.setVoltages()
-                }
+//                ret.forEach { (item) in
+//                    item.setVoltages()
+//                }
                 return ret
             } else {
                 return [Ecg]()
