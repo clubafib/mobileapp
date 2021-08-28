@@ -528,19 +528,19 @@ class HealthDataManager {
                     }
                 }
                 for batch in uploadBatch {
-//                    let lock = DispatchGroup()
-//                    for i in 0..<batch.count {
-//                        lock.enter()
-//                        let data = batch[i].getVoltageData()
-//                        ApiManager.sharedInstance.uploadEcgFile(data) { (url) in
-//                            if let val = url {
-//                                batch[i].file_url = val
-////                                batch[i].setVoltages()
-//                            }
-//                            lock.leave()
-//                        }
-//                    }
-//                    lock.notify(queue: .global()) {
+                    let lock = DispatchGroup()
+                    for i in 0..<batch.count {
+                        lock.enter()
+                        let data = batch[i].getVoltageData()
+                        ApiManager.sharedInstance.uploadEcgFile(data) { (url) in
+                            if let val = url {
+                                batch[i].file_url = val
+//                                batch[i].setVoltages()
+                            }
+                            lock.leave()
+                        }
+                    }
+                    lock.notify(queue: .global()) {
                         ApiManager.sharedInstance.setECGData(batch) { (data, errorMsg) in
                             if errorMsg == nil {
                                 DispatchQueue.global(qos: .background).async {                               
@@ -552,7 +552,7 @@ class HealthDataManager {
                                 print("error on saving ecg data: \(errorMsg ?? "")")
                             }
                         }
-//                    }
+                    }
                 }
             }
         }

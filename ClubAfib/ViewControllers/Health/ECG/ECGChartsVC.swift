@@ -47,7 +47,12 @@ class ECGChartsVC: UIViewController {
         let df = DateFormatter()
         var prevDate = ""
         var newDate = ""
+        var maxRecords = 0
         for item in ecgData {
+            if maxRecords >= 10 && self.selectedDataType == .Year {
+                self.showToast(message: "Data truncated to \(maxRecords) records.")
+                break
+            }
             switch self.selectedDataType {
             case .Day:
                 df.dateFormat = "yyyy-MM-dd HH"
@@ -67,6 +72,7 @@ class ECGChartsVC: UIViewController {
 
             if newDate == prevDate {
                 m_tblData.append(item)
+                maxRecords = maxRecords + 1
             }
         }
         
@@ -116,7 +122,7 @@ class CellEcgCharts:UITableViewCell {
         df.dateFormat = "MM/dd/yyyy, hh:mm a"
         lblTime.text = df.string(from: data.date)
         let voltageData = data.getVoltageData()
-        let voltagesFromData = data.getVoltagesFromData(voltageData)
+        let voltagesFromData = data.setVoltagesFromData(voltageData)
         vwChart.setData(voltagesFromData)
     }
 }

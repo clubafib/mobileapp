@@ -30,7 +30,7 @@ class ECGDetailChartVC: UIViewController {
         
         vwChart.frame.size = CGSize(width: scvwContent.frame.size.width + 20, height: 180)
         let voltageData = m_data.getVoltageData()
-        let voltagesFromData = m_data.getVoltagesFromData(voltageData)
+        let voltagesFromData = m_data.setVoltagesFromData(voltageData)
         if voltagesFromData.count > 0 {
             vwChart.frame.size = CGSize(width: CGFloat(voltagesFromData.last!.time * 150), height: 180)
         }

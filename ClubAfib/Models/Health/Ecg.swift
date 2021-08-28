@@ -110,7 +110,7 @@ class Ecg : Codable {
         return Data()
     }
     
-    func getVoltagesFromData(_ data:Data) -> [EcgItem] {
+    func setVoltagesFromData(_ data:Data) -> [EcgItem] {
 //        self.voltages.removeAll()
         var array = [EcgItem]()
         let byteAry = [Byte](data)
