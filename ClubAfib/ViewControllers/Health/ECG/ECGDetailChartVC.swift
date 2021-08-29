@@ -29,14 +29,12 @@ class ECGDetailChartVC: UIViewController {
         lblTime.text = df.string(from: m_data.date)
         
         vwChart.frame.size = CGSize(width: scvwContent.frame.size.width + 20, height: 180)
-        let voltageData = m_data.getVoltageData()
-        let voltagesFromData = m_data.setVoltagesFromData(voltageData)
-        if voltagesFromData.count > 0 {
-            vwChart.frame.size = CGSize(width: CGFloat(voltagesFromData.last!.time * 150), height: 180)
+        if m_data.voltages.count > 0 {
+            vwChart.frame.size = CGSize(width: CGFloat(m_data.voltages.last!.time * 150), height: 180)
         }
         vwContent.frame.size = CGSize(width: vwChart.frame.size.width + 20, height: scvwContent.frame.size.height)
         scvwContent.contentSize = vwContent.frame.size
-        vwChart.setData(voltagesFromData)
+        vwChart.setData(m_data.voltages)
         
         switch HKElectrocardiogram.Classification(rawValue: m_data.type) {
         case .sinusRhythm:

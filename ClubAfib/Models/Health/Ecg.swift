@@ -31,7 +31,7 @@ class Ecg : Codable {
     }
     var dateTxt = "1970-01-01 00:00:00"
     var avgHeartRate:Double = 0
-//    var voltages = [EcgItem]()
+    var voltages = [EcgItem]()
     var file_url = ""
     
     var status = 0
@@ -85,7 +85,7 @@ class Ecg : Codable {
     }
     */
     
-    public func getVoltageData() -> Data {
+//    public func getVoltageData() -> Data {
 //        var array = [UInt8]()
 //        for item in voltages {
 //            array.append(contentsOf: ByteBackpacker.pack(item.time))
@@ -102,31 +102,31 @@ class Ecg : Codable {
 //                }
 //            }
 //        }
-        if let url =  URL(string: self.file_url) {
-            if let data = try? Data(contentsOf:url) {
-                return data
-            }
-        }
-        return Data()
-    }
+//        if let url =  URL(string: self.file_url) {
+//            if let data = try? Data(contentsOf:url) {
+//                return data
+//            }
+//        }
+//        return Data()
+//    }
     
-    func setVoltagesFromData(_ data:Data) -> [EcgItem] {
-//        self.voltages.removeAll()
-        var array = [EcgItem]()
-        let byteAry = [Byte](data)
-        let cnt = byteAry.count / 16
-        for i in 0..<cnt {
-            let idx = i * 16
-            var bytes = Array(byteAry[idx..<(idx + 8)])
-            let time = ByteBackpacker.unpack(bytes) as Double
-            bytes = Array(byteAry[(idx + 8)..<(idx + 16)])
-            let value = ByteBackpacker.unpack(bytes) as Double
-            let ecgItem = EcgItem(time, value: value)
-//            self.voltages.append(ecgItem)
-            array.append(ecgItem)
-        }
-        return array
-    }
+//    func setVoltagesFromData(_ data:Data) -> [EcgItem] {
+////        self.voltages.removeAll()
+//        var array = [EcgItem]()
+//        let byteAry = [Byte](data)
+//        let cnt = byteAry.count / 16
+//        for i in 0..<cnt {
+//            let idx = i * 16
+//            var bytes = Array(byteAry[idx..<(idx + 8)])
+//            let time = ByteBackpacker.unpack(bytes) as Double
+//            bytes = Array(byteAry[(idx + 8)..<(idx + 16)])
+//            let value = ByteBackpacker.unpack(bytes) as Double
+//            let ecgItem = EcgItem(time, value: value)
+////            self.voltages.append(ecgItem)
+//            array.append(ecgItem)
+//        }
+//        return array
+//    }
 
     ///////////////// Static Methods ////////////////////
     class func set(_ data: [Ecg]) {

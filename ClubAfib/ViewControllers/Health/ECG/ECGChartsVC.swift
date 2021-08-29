@@ -48,6 +48,8 @@ class ECGChartsVC: UIViewController {
         var prevDate = ""
         var newDate = ""
         var maxRecords = 0
+        var startDate:Date? = nil
+        var endDate:Date? = nil
         for item in ecgData {
             if maxRecords >= 10 && self.selectedDataType == .Year {
                 self.showToast(message: "Data truncated to \(maxRecords) records.")
@@ -73,10 +75,21 @@ class ECGChartsVC: UIViewController {
             if newDate == prevDate {
                 m_tblData.append(item)
                 maxRecords = maxRecords + 1
+                if (startDate == nil) {
+                    startDate = item.date
+                }
+                endDate = item.date
             }
         }
-        
-        tblData.reloadData()
+
+        if (startDate != nil && endDate != nil) {
+            HealthKitHelper.default.getECGDetail(startDate: startDate!, endDate: endDate!) { [self] (ecgs: [Ecg]?, error:Error?) in
+                m_tblData = ecgs ?? [Ecg]()
+                DispatchQueue.main.async {
+                    tblData.reloadData()
+                }
+            }
+        }
     }
     
     @IBAction func onBack(){
@@ -121,9 +134,7 @@ class CellEcgCharts:UITableViewCell {
         let df = DateFormatter()
         df.dateFormat = "MM/dd/yyyy, hh:mm a"
         lblTime.text = df.string(from: data.date)
-        let voltageData = data.getVoltageData()
-        let voltagesFromData = data.setVoltagesFromData(voltageData)
-        vwChart.setData(voltagesFromData)
+        vwChart.setData(data.voltages)
     }
 }
 

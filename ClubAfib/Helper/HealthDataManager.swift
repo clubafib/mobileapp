@@ -531,7 +531,7 @@ class HealthDataManager {
                     let lock = DispatchGroup()
                     for i in 0..<batch.count {
                         lock.enter()
-                        let data = batch[i].getVoltageData()
+                        let data = Data()
                         ApiManager.sharedInstance.uploadEcgFile(data) { (url) in
                             if let val = url {
                                 batch[i].file_url = val

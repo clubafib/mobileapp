@@ -943,7 +943,7 @@ class HealthKitHelper {
         let ecgQuery = HKSampleQuery(sampleType: ecgType,
                                      predicate: nil,
                                      limit: HKObjectQueryNoLimit,
-                                     sortDescriptors: nil) { [self] (query, samples, error) in
+                                     sortDescriptors: nil) { (query, samples, error) in
             
             if let error = error {
                 completion(nil, error)
@@ -955,7 +955,7 @@ class HealthKitHelper {
                 return
             }
             var ecgs = [Ecg]()
-            let group = DispatchGroup()            
+//            let group = DispatchGroup()
             for sample in ecgSamples {
                 let ecg = Ecg()
                 if let val = sample.averageHeartRate {
@@ -965,25 +965,84 @@ class HealthKitHelper {
                 ecg.type = sample.classification.rawValue
                 ecgs.append(ecg)                
                                 
+//                group.enter()
+//                let query = HKElectrocardiogramQuery(sample) { (query, result) in
+//                    switch result {
+//                        case .error(let error):
+//                            print("error: ", error)
+//                            break
+//                        case .measurement(let value):
+//                            let ecgitem = EcgItem()
+//                            if let val = value.quantity(for: .appleWatchSimilarToLeadI) {
+//                                ecgitem.value = val.doubleValue(for: HKUnit(from: "mcV"))
+//                            }
+//
+//                            ecgitem.time = value.timeSinceSampleStart
+////                            ecg.voltages.append(ecgitem)
+//                        case .done:
+//                            group.leave()
+//                            break
+//                        default:
+//                            break
+//                    }
+//                }
+//                healthStore.execute(query)
+            }
+//            group.notify(queue: .main) {
+                completion(ecgs, nil)
+//            }
+        }
+        self.healthStore.execute(ecgQuery)
+    }
+
+    @available(iOS 14.0, *)
+    func getECGDetail(startDate:Date, endDate:Date, completion: @escaping ([Ecg]?, Error?) -> Swift.Void) {
+        let ecgType = HKObjectType.electrocardiogramType()
+        let predicateByStartEndDate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [])
+        let ecgQuery = HKSampleQuery(sampleType: ecgType,
+                                     predicate: predicateByStartEndDate,
+                                     limit: HKObjectQueryNoLimit,
+                                     sortDescriptors: nil) { [self] (query, samples, error) in
+            
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+            
+            guard let ecgSamples = samples as? [HKElectrocardiogram] else {
+                print("*** Unable to convert \(String(describing: samples)) to [HKElectrocardiogram] ***")
+                return
+            }
+            var ecgs = [Ecg]()
+            let group = DispatchGroup()
+            for sample in ecgSamples {
+                let ecg = Ecg()
+                if let val = sample.averageHeartRate {
+                    ecg.avgHeartRate = val.doubleValue(for: HKUnit(from: "count/min"))
+                }
+                ecg.date = sample.endDate
+                ecg.type = sample.classification.rawValue
+                ecgs.append(ecg)
+                
                 group.enter()
                 let query = HKElectrocardiogramQuery(sample) { (query, result) in
                     switch result {
-                        case .error(let error):
-                            print("error: ", error)
-                            break
-                        case .measurement(let value):
-                            let ecgitem = EcgItem()
-                            if let val = value.quantity(for: .appleWatchSimilarToLeadI) {
-                                ecgitem.value = val.doubleValue(for: HKUnit(from: "mcV"))
-                            }
-                            
-                            ecgitem.time = value.timeSinceSampleStart
-//                            ecg.voltages.append(ecgitem)
-                        case .done:
-                            group.leave()
-                            break
-                        default:
-                            break
+                    case .error(let error):
+                        print("error: ", error)
+                        break
+                    case .measurement(let value):
+                        let ecgitem = EcgItem()
+                        if let val = value.quantity(for: .appleWatchSimilarToLeadI) {
+                            ecgitem.value = val.doubleValue(for: HKUnit(from: "mcV"))
+                        }
+                        
+                        ecgitem.time = value.timeSinceSampleStart
+                        ecg.voltages.append(ecgitem)
+                    case .done:
+                        group.leave()
+                        break
+                    default:
+                        break
                     }
                 }
                 healthStore.execute(query)
