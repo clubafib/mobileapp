@@ -83,10 +83,12 @@ class ECGChartsVC: UIViewController {
         }
 
         if (startDate != nil && endDate != nil) {
+            self.showLoadingProgress(view: self.view)
             HealthKitHelper.default.getECGDetail(startDate: startDate!, endDate: endDate!) { [self] (ecgs: [Ecg]?, error:Error?) in
                 m_tblData = ecgs ?? [Ecg]()
                 DispatchQueue.main.async {
                     tblData.reloadData()
+                    self.dismissLoadingProgress(view: self.view)
                 }
             }
         }
