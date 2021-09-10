@@ -29,7 +29,7 @@ target 'ClubAfib' do
     # RESTful API
     pod 'Alamofire'
     pod 'SwiftyJSON'
-    pod 'RealmSwift'
+    pod 'RealmSwift', '~> 10.5.2'
     
     # Facebook
     pod 'FBSDKLoginKit', '~> 7.1.1'
@@ -38,7 +38,7 @@ target 'ClubAfib' do
     pod 'GoogleSignIn', '~> 5.0.2'
 
     pod 'Google-Mobile-Ads-SDK'
-    pod 'Stripe'
+    pod 'Stripe', '~> 17.0.4'
     pod 'IQKeyboardManagerSwift'
     pod 'ByteBackpacker'
 end
