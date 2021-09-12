@@ -61,6 +61,7 @@ class BodyWeightVC: UIViewController {
         self.viewAllData.isUserInteractionEnabled = true
         self.viewAllData.addGestureRecognizer(viewAllDataTap)
         
+        showLoadingProgress(view: self.navigationController?.view)
         getECGData()
         getWeights()
         
@@ -76,6 +77,7 @@ class BodyWeightVC: UIViewController {
     
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
+            self.showLoadingProgress(view: self.navigationController?.view)
             self.getECGData()
             self.getWeights()
         }
@@ -212,6 +214,7 @@ class BodyWeightVC: UIViewController {
                 self.processDataset(weightData, healthType: .BodyWeight)
                 DispatchQueue.main.async {
                     self.resetChartView()
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
                 }
             }
         }
