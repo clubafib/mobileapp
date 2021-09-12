@@ -8,6 +8,7 @@
 
 import UIKit
 import HealthKit
+import SwiftyJSON
 
 class BodyWeightVC: UIViewController {
     
@@ -187,9 +188,33 @@ class BodyWeightVC: UIViewController {
     }
     
     private func getWeights() {
-//        let weightData = HealthDataManager.default.weightData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-//        self.processDataset(weightData, healthType: .BodyWeight)
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getBodyWeightData() {(satistics, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let dataset = satistics else {
+                    print("can't get weight data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    return
+                }
+                
+                var weightData = [Weight]()
+                for data in dataset {
+                    weightData.append(
+                        Weight(JSON([
+                            "date": data.0.toString,
+                            "weight": data.1
+                        ])))
+                }
+                self.processDataset(weightData, healthType: .BodyWeight)
+                DispatchQueue.main.async {
+                    self.resetChartView()
+                }
+            }
+        }
     }
     
     func resetStartDate(){
@@ -371,15 +396,29 @@ class BodyWeightVC: UIViewController {
     }
     
     private func getECGData(){
-//        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-//        self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getECG { (ecgData, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let ecgData = ecgData else {
+                    print("can't get ECG data")
+                    return
+                }
+                self.processECGDataset(ecgData: ecgData)
+                DispatchQueue.main.async {
+                    self.resetChartView()
+                }
+            }
+        }
     }
     
-    private func processECGDataset() {
+    private func processECGDataset(ecgData: [Ecg]) {
         ecgAFEntries.removeAll()
         ecgAF.removeAll()
-        for item in self.ecgData {
+        for item in ecgData {
             if HKElectrocardiogram.Classification(rawValue: item.type) == .atrialFibrillation {
                 ecgAF.append(item)
             }
@@ -560,9 +599,22 @@ class BodyWeightVC: UIViewController {
     }
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
-        selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
-        self.processECGDataset()
-        resetChartView()
+        self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
+        HealthKitHelper.default.getECG { (ecgData, error) in
+            
+            if (error != nil) {
+                print(error!)
+            }
+            
+            guard let ecgData = ecgData else {
+                print("can't get ECG data")
+                return
+            }
+            self.processECGDataset(ecgData: ecgData)
+            DispatchQueue.main.async {
+                self.resetChartView()
+            }
+        }
     }
     
     @IBAction func onBackPressed(_ sender: Any) {
