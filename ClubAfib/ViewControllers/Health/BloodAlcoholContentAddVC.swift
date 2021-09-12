@@ -84,18 +84,18 @@ class BloodAlcoholContentAddVC: UIViewController {
 //            }
 //        }
         showLoadingProgress(view: self.view)
-        ApiManager.sharedInstance.addAlcoholUseData((date, alcohol)) { (alcholUseData, errorMsg) in
-            self.dismissLoadingProgress(view: self.view)
-            if let alcholUseData = alcholUseData {
-                HealthDataManager.default.addAlcoholUseData(alcholUseData)
-                DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
-                }
-            }
-            else {
-                print("error on saving alcohol use data: \(errorMsg ?? "")")
-            }
-        }
+//        ApiManager.sharedInstance.addAlcoholUseData((date, alcohol)) { (alcholUseData, errorMsg) in
+//            self.dismissLoadingProgress(view: self.view)
+//            if let alcholUseData = alcholUseData {
+////                HealthDataManager.default.addAlcoholUseData(alcholUseData)
+////                DispatchQueue.main.async {
+////                    self.navigationController?.popViewController(animated: true)
+////                }
+//            }
+//            else {
+//                print("error on saving alcohol use data: \(errorMsg ?? "")")
+//            }
+//        }
     }
     
 }

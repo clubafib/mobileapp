@@ -125,9 +125,9 @@ class Ecg : Codable {
             let json = try Data(contentsOf: filename)
             let decoder = JSONDecoder()
             if let ret = try? decoder.decode([Ecg].self, from: json) {
-                ret.forEach { (item) in
-                    item.setVoltages()
-                }
+//                ret.forEach { (item) in
+//                    item.setVoltages()
+//                }
                 return ret
             } else {
                 return [Ecg]()
@@ -171,6 +171,7 @@ class Ecg : Codable {
 }
 
 class EcgItem: Object, Codable {
+    @objc dynamic var id = 0
     var time: TimeInterval = 0
     var value: Double = 0
     

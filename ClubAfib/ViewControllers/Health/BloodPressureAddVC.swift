@@ -93,21 +93,21 @@ class BloodPressureAddVC: UIViewController {
                     }
                 }
             }
-            ApiManager.sharedInstance.addBloodPressureData(bloodPressure) { (bloodPressureData, errorMsg) in
-                self.dismissLoadingProgress(view: self.view)
-                if let bloodPressureData = bloodPressureData {
-                    HealthDataManager.default.addBloodPressureData(bloodPressureData)
-                    DispatchQueue.main.async {
-                        self.navigationController?.popViewController(animated: true)
-                    }
-                }
-                else {
-                    print("error on saving blood pressure data: \(errorMsg ?? "")")
-                    DispatchQueue.main.async {
-                        self.showSimpleAlert(title: "Error", message: "Error on adding blood pressure data, please try again later", complete: nil)
-                    }
-                }
-            }
+//            ApiManager.sharedInstance.addBloodPressureData(bloodPressure) { (bloodPressureData, errorMsg) in
+//                self.dismissLoadingProgress(view: self.view)
+//                if let bloodPressureData = bloodPressureData {
+////                    HealthDataManager.default.addBloodPressureData(bloodPressureData)
+////                    DispatchQueue.main.async {
+////                        self.navigationController?.popViewController(animated: true)
+////                    }
+//                }
+//                else {
+//                    print("error on saving blood pressure data: \(errorMsg ?? "")")
+//                    DispatchQueue.main.async {
+//                        self.showSimpleAlert(title: "Error", message: "Error on adding blood pressure data, please try again later", complete: nil)
+//                    }
+//                }
+//            }
         }
     }
     

@@ -93,7 +93,6 @@
 		B674CED524E62920005A9B49 /* BloodPressureVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B674CED424E62920005A9B49 /* BloodPressureVC.swift */; };
 		B674CED724E689AB005A9B49 /* BloodPressureAddVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B674CED624E689AB005A9B49 /* BloodPressureAddVC.swift */; };
 		B6756F2624F4FC500097ACB4 /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6756F2524F4FC500097ACB4 /* EditProfileVC.swift */; };
-		B677328A24ED896E00EEAA82 /* HealthDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B677328924ED896E00EEAA82 /* HealthDataManager.swift */; };
 		B677328C24ED8D2F00EEAA82 /* HeartRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B677328B24ED8D2F00EEAA82 /* HeartRate.swift */; };
 		B677328E24ED90BB00EEAA82 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B677328D24ED90BB00EEAA82 /* RealmManager.swift */; };
 		B677329124EDB17300EEAA82 /* PostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B677329024EDB17300EEAA82 /* PostVC.swift */; };
@@ -428,7 +427,6 @@
 		B674CED424E62920005A9B49 /* BloodPressureVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureVC.swift; sourceTree = "<group>"; };
 		B674CED624E689AB005A9B49 /* BloodPressureAddVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureAddVC.swift; sourceTree = "<group>"; };
 		B6756F2524F4FC500097ACB4 /* EditProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
-		B677328924ED896E00EEAA82 /* HealthDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataManager.swift; sourceTree = "<group>"; };
 		B677328B24ED8D2F00EEAA82 /* HeartRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRate.swift; sourceTree = "<group>"; };
 		B677328D24ED90BB00EEAA82 /* RealmManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
 		B677329024EDB17300EEAA82 /* PostVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostVC.swift; sourceTree = "<group>"; };
@@ -865,7 +863,6 @@
 				B663CD3324C624DF001D80A7 /* UserInfo.swift */,
 				B663CD3C24C630B5001D80A7 /* Validator.swift */,
 				B62AB63624C8444F00AF0C32 /* HealthKitHelper.swift */,
-				B677328924ED896E00EEAA82 /* HealthDataManager.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -1824,7 +1821,6 @@
 				B67AC8D424F0224C00EA0366 /* EnergyBurn.swift in Sources */,
 				B69F13AF24F0623600BDD786 /* GoodsDetailVC.swift in Sources */,
 				B66EC6D724CC88180065CEF9 /* User.swift in Sources */,
-				B677328A24ED896E00EEAA82 /* HealthDataManager.swift in Sources */,
 				B677329C24EDCCBA00EEAA82 /* PostDetailVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

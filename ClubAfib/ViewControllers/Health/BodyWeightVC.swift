@@ -69,8 +69,8 @@ class BodyWeightVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        HealthDataManager.default.getHeartRatesFromDevice()
-        HealthDataManager.default.getWeightsFromDevice()
+//        HealthDataManager.default.getHeartRatesFromDevice()
+//        HealthDataManager.default.getWeightsFromDevice()
     }
     
     @objc private func healthDataChanged(notification: NSNotification){
@@ -187,8 +187,8 @@ class BodyWeightVC: UIViewController {
     }
     
     private func getWeights() {
-        let weightData = HealthDataManager.default.weightData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processDataset(weightData, healthType: .BodyWeight)
+//        let weightData = HealthDataManager.default.weightData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processDataset(weightData, healthType: .BodyWeight)
         self.resetChartView()
     }
     
@@ -371,8 +371,8 @@ class BodyWeightVC: UIViewController {
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processECGDataset()
+//        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processECGDataset()
         self.resetChartView()
     }
     
@@ -579,16 +579,16 @@ class BodyWeightVC: UIViewController {
     }
     
     @objc func onViewAllDataTapped() {        
-        let weightData = HealthDataManager.default.weightData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-        if weightData.count == 0 {
-            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
-            return
-        }
-        if dayStartDate != Date.Max() {
-            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "BodyWeightDataListVC") as! BodyWeightDataListVC            
-            dataListVC.data = weightData
-            self.navigationController?.pushViewController(dataListVC, animated: true)
-        }
+//        let weightData = HealthDataManager.default.weightData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
+//        if weightData.count == 0 {
+//            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
+//            return
+//        }
+//        if dayStartDate != Date.Max() {
+//            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "BodyWeightDataListVC") as! BodyWeightDataListVC            
+//            dataListVC.data = weightData
+//            self.navigationController?.pushViewController(dataListVC, animated: true)
+//        }
     }
     
 }

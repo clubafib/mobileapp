@@ -60,17 +60,17 @@ class SleepDataListVC: UIViewController {
                 }
             }
             
-            ApiManager.sharedInstance.deleteSleepData(sleep) { (success, errorMsg) in
-                if success {
-                    try! RealmManager.default.realm.write {
-                        sleep.status = 2 // delete status
-                    }
-                    HealthDataManager.default.deleteSleepData(sleep)
-                }
-                else {
-                    print("error on saving sleep data: \(errorMsg ?? "")")
-                }
-            }
+//            ApiManager.sharedInstance.deleteSleepData(sleep) { (success, errorMsg) in
+//                if success {
+//                    try! RealmManager.default.realm.write {
+//                        sleep.status = 2 // delete status
+//                    }
+////                    HealthDataManager.default.deleteSleepData(sleep)
+//                }
+//                else {
+//                    print("error on saving sleep data: \(errorMsg ?? "")")
+//                }
+//            }
         }
     }
     

@@ -60,17 +60,17 @@ class BloodPressureDataListVC: UIViewController {
                 }
             }
             
-            ApiManager.sharedInstance.deleteBloodPressureData(bloodPressure) { (success, errorMsg) in
-                if success {
-                    try! RealmManager.default.realm.write {
-                        bloodPressure.status = 2 // delete status
-                    }
-                    HealthDataManager.default.deleteBloodPressureData(bloodPressure)
-                }
-                else {
-                    print("error on saving blood pressure data: \(errorMsg ?? "")")
-                }
-            }
+//            ApiManager.sharedInstance.deleteBloodPressureData(bloodPressure) { (success, errorMsg) in
+//                if success {
+//                    try! RealmManager.default.realm.write {
+//                        bloodPressure.status = 2 // delete status
+//                    }
+////                    HealthDataManager.default.deleteBloodPressureData(bloodPressure)
+//                }
+//                else {
+//                    print("error on saving blood pressure data: \(errorMsg ?? "")")
+//                }
+//            }
         }
     }
     

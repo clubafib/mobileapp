@@ -149,7 +149,7 @@ class HeartRateVC: UIViewController {
                 }
             }            
         }
-        HealthDataManager.default.getHeartRatesFromDevice()
+//        HealthDataManager.default.getHeartRatesFromDevice()
     }
     
     
@@ -429,14 +429,14 @@ class HeartRateVC: UIViewController {
     }
     
     private func getHeartRates() {
-        self.m_hrData = HealthDataManager.default.heartRateData
-        self.processDataset()
+//        self.m_hrData = HealthDataManager.default.heartRateData
+//        self.processDataset()
         self.resetChartView()
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData
-        self.processECGDataset()
+//        self.ecgData = HealthDataManager.default.ecgData
+//        self.processECGDataset()
         self.resetChartView()
     }
     

@@ -25,8 +25,8 @@ class HomeTabVC: UITabBarController {
         
 //        NotificationCenter.default.addObserver(self, selector: #selector(self.onProfileUpdated), name: NSNotification.Name(USER_NOTIFICATION_PROFILE_CHANGED), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.onMenuClicked(sender:)), name: NSNotification.Name(USER_NOTIFICATION_OPEN_MENU), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onDataFeteched), name: NSNotification.Name(USER_NOTIFICATION_FECTED_DATA), object: nil)
-        showLoadingProgress(view: self.navigationController?.view, label: "Please Stay Patient")
+//        NotificationCenter.default.addObserver(self, selector: #selector(self.onDataFeteched), name: NSNotification.Name(USER_NOTIFICATION_FECTED_DATA), object: nil)
+//        showLoadingProgress(view: self.navigationController?.view, label: "Please Stay Patient")
     }
     
     @objc func onDataFeteched(){
@@ -63,7 +63,7 @@ class HomeTabVC: UITabBarController {
                 if self.requireAutoLogin {
                     self.autoLogin()
                 } else {
-                    HealthDataManager.default.fetchData()
+//                    HealthDataManager.default.fetchData()
                 }
             }    
         }
@@ -145,7 +145,7 @@ class HomeTabVC: UITabBarController {
                 
                 if success {
                     self.getDoctorList()
-                    HealthDataManager.default.fetchData()
+//                    HealthDataManager.default.fetchData()
                 }
                 else{
                     let signinVC = AUTHENTICATION_STORYBOARD.instantiateViewController(withIdentifier: "SigninVC") as! SigninVC

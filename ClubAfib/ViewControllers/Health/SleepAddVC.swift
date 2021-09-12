@@ -113,21 +113,21 @@ class SleepAddVC: UIViewController {
                 }
             }
             
-            ApiManager.sharedInstance.addSleepData(sleep) { (sleepData, errorMsg) in
-                self.dismissLoadingProgress(view: self.view)
-                if let sleepData = sleepData {
-                    HealthDataManager.default.addSleepData(sleepData)
-                    DispatchQueue.main.async {
-                        self.navigationController?.popViewController(animated: true)
-                    }
-                }
-                else {
-                    print("error on saving blood pressure data: \(errorMsg ?? "")")
-                    DispatchQueue.main.async {
-                        self.showSimpleAlert(title: "Error", message: "Error on adding blood pressure data, please try again later", complete: nil)
-                    }
-                }
-            }
+//            ApiManager.sharedInstance.addSleepData(sleep) { (sleepData, errorMsg) in
+//                self.dismissLoadingProgress(view: self.view)
+//                if let sleepData = sleepData {
+////                    HealthDataManager.default.addSleepData(sleepData)
+//                    DispatchQueue.main.async {
+//                        self.navigationController?.popViewController(animated: true)
+//                    }
+//                }
+//                else {
+//                    print("error on saving blood pressure data: \(errorMsg ?? "")")
+//                    DispatchQueue.main.async {
+//                        self.showSimpleAlert(title: "Error", message: "Error on adding blood pressure data, please try again later", complete: nil)
+//                    }
+//                }
+//            }
         }
     }
     

@@ -67,7 +67,7 @@ class AlcoholUseVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        HealthDataManager.default.getECGDataFromDevice()
+//        HealthDataManager.default.getECGDataFromDevice()
     }
     
     @objc private func healthDataChanged(notification: NSNotification){
@@ -186,8 +186,8 @@ class AlcoholUseVC: UIViewController {
     }
     
     private func getAlcoholUses() {
-        let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processDataset(alcoholUseData, healthType: .AlcoholUse)
+//        let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processDataset(alcoholUseData, healthType: .AlcoholUse)
         self.resetChartView()
     }
     
@@ -348,9 +348,9 @@ class AlcoholUseVC: UIViewController {
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processECGDataset()
-        self.resetChartView()
+//        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processECGDataset()
+//        self.resetChartView()
     }
     
     private func processECGDataset() {
@@ -548,16 +548,16 @@ class AlcoholUseVC: UIViewController {
     }
     
     @objc func onViewAllDataTapped() {
-        let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-        if alcoholUseData.count == 0 {
-            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
-            return
-        }
-        if dayStartDate != Date.Max() {
-            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "AlcoholUseDataListVC") as! AlcoholUseDataListVC
-            dataListVC.data = alcoholUseData
-            self.navigationController?.pushViewController(dataListVC, animated: true)
-        }
+//        let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
+//        if alcoholUseData.count == 0 {
+//            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
+//            return
+//        }
+//        if dayStartDate != Date.Max() {
+//            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "AlcoholUseDataListVC") as! AlcoholUseDataListVC
+//            dataListVC.data = alcoholUseData
+//            self.navigationController?.pushViewController(dataListVC, animated: true)
+//        }
     }
     
 }

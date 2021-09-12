@@ -46,17 +46,17 @@ class AlcoholUseDataListVC: UIViewController {
         if index < self.data.count {
             let alcoholUse = self.data[index]
             self.data.remove(at: index)
-            ApiManager.sharedInstance.deleteAlcoholUseData(alcoholUse) { (success, errorMsg) in
-                if success {
-                    try! RealmManager.default.realm.write {
-                        alcoholUse.status = 2 // delete status
-                    }
-                    HealthDataManager.default.deleteAlcoholUseData(alcoholUse)
-                }
-                else {
-                    print("error on saving alcoholUse data: \(errorMsg ?? "")")
-                }
-            }
+//            ApiManager.sharedInstance.deleteAlcoholUseData(alcoholUse) { (success, errorMsg) in
+//                if success {
+//                    try! RealmManager.default.realm.write {
+//                        alcoholUse.status = 2 // delete status
+//                    }
+////                    HealthDataManager.default.deleteAlcoholUseData(alcoholUse)
+//                }
+//                else {
+//                    print("error on saving alcoholUse data: \(errorMsg ?? "")")
+//                }
+//            }
         }
     }
     

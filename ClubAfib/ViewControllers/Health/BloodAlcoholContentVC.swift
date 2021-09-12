@@ -70,7 +70,7 @@ class BloodAlcoholContentVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        HealthDataManager.default.getHeartRatesFromDevice()
+//        HealthDataManager.default.getHeartRatesFromDevice()
     }
     
     @objc private func healthDataChanged(notification: NSNotification){
@@ -187,14 +187,14 @@ class BloodAlcoholContentVC: UIViewController {
     }
     
     private func getHeartRates() {
-        let heartRateData = HealthDataManager.default.heartRateData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processDataset(heartRateData, healthType: .HeartRate)
+//        let heartRateData = HealthDataManager.default.heartRateData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processDataset(heartRateData, healthType: .HeartRate)
         self.resetChartView()
     }
     
     private func getBloodAlcoholContent() {
-        let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processDataset(alcoholUseData, healthType: .BloodAlcoholContent)
+//        let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processDataset(alcoholUseData, healthType: .BloodAlcoholContent)
         self.resetChartView()
     }
     

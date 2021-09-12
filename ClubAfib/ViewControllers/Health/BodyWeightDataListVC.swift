@@ -46,17 +46,17 @@ class BodyWeightDataListVC: UIViewController {
         if index < self.data.count {
             let weight = self.data[index]
             self.data.remove(at: index)
-            ApiManager.sharedInstance.deleteWeightData(weight) { (success, errorMsg) in
-                if success {
-                    try! RealmManager.default.realm.write {
-                        weight.status = 2 // delete status
-                    }
-                    HealthDataManager.default.deleteWeightData(weight)
-                }
-                else {
-                    print("error on saving weight data: \(errorMsg ?? "")")
-                }
-            }
+//            ApiManager.sharedInstance.deleteWeightData(weight) { (success, errorMsg) in
+//                if success {
+//                    try! RealmManager.default.realm.write {
+//                        weight.status = 2 // delete status
+//                    }
+////                    HealthDataManager.default.deleteWeightData(weight)
+//                }
+//                else {
+//                    print("error on saving weight data: \(errorMsg ?? "")")
+//                }
+//            }
         }
     }
     

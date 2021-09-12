@@ -68,18 +68,18 @@ class AlcoholUseAddVC: UIViewController {
     @IBAction func onAddButtonPressed(_ sender: Any) {
         // no need to save to health store
         showLoadingProgress(view: self.view)
-        ApiManager.sharedInstance.addAlcoholUseData((date, alcohol)) { (alcholUseData, errorMsg) in
+//        ApiManager.sharedInstance.addAlcoholUseData((date, alcohol)) { (alcholUseData, errorMsg) in
             self.dismissLoadingProgress(view: self.view)
-            if let alcholUseData = alcholUseData {
-                HealthDataManager.default.addAlcoholUseData(alcholUseData)
-                DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
-                }
-            }
-            else {
-                print("error on saving alcohol use data: \(errorMsg ?? "")")
-            }
-        }
+//            if let alcholUseData = alcholUseData {
+////                HealthDataManager.default.addAlcoholUseData(alcholUseData)
+//                DispatchQueue.main.async {
+//                    self.navigationController?.popViewController(animated: true)
+//                }
+//            }
+//            else {
+//                print("error on saving alcohol use data: \(errorMsg ?? "")")
+//            }
+//        }
     }
     
 }

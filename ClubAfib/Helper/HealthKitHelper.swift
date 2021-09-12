@@ -955,7 +955,7 @@ class HealthKitHelper {
                 return
             }
             var ecgs = [Ecg]()
-            let group = DispatchGroup()            
+//            let group = DispatchGroup()
             for sample in ecgSamples {
                 let ecg = Ecg()
                 if let val = sample.averageHeartRate {
@@ -965,32 +965,32 @@ class HealthKitHelper {
                 ecg.type = sample.classification.rawValue
                 ecgs.append(ecg)                
                                 
-                group.enter()
-                let query = HKElectrocardiogramQuery(sample) { (query, result) in
-                    switch result {
-                        case .error(let error):
-                            print("error: ", error)
-                            break
-                        case .measurement(let value):
-                            let ecgitem = EcgItem()
-                            if let val = value.quantity(for: .appleWatchSimilarToLeadI) {
-                                ecgitem.value = val.doubleValue(for: HKUnit(from: "mcV"))
-                            }
-                            
-                            ecgitem.time = value.timeSinceSampleStart
-                            ecg.voltages.append(ecgitem)
-                        case .done:
-                            group.leave()
-                            break
-                        default:
-                            break
-                    }
-                }
-                healthStore.execute(query)
+//                group.enter()
+//                let query = HKElectrocardiogramQuery(sample) { (query, result) in
+//                    switch result {
+//                        case .error(let error):
+//                            print("error: ", error)
+//                            break
+//                        case .measurement(let value):
+//                            let ecgitem = EcgItem()
+//                            if let val = value.quantity(for: .appleWatchSimilarToLeadI) {
+//                                ecgitem.value = val.doubleValue(for: HKUnit(from: "mcV"))
+//                            }
+//
+//                            ecgitem.time = value.timeSinceSampleStart
+//                            ecg.voltages.append(ecgitem)
+//                        case .done:
+//                            group.leave()
+//                            break
+//                        default:
+//                            break
+//                    }
+//                }
+//                healthStore.execute(query)
             }
-            group.notify(queue: .main) {
+//            group.notify(queue: .main) {
                 completion(ecgs, nil)
-            }
+//            }
         }
         self.healthStore.execute(ecgQuery)
     }

@@ -72,7 +72,7 @@ class SleepVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)                
-        HealthDataManager.default.getSleepFromDevice()
+//        HealthDataManager.default.getSleepFromDevice()
     }
     
     @objc private func healthDataChanged(notification: NSNotification){
@@ -195,11 +195,11 @@ class SleepVC: UIViewController {
     }
     
     private func getSleepAnalysis() {
-        let sleepData = HealthDataManager.default.sleepData.sorted(by: { $0.start.compare($1.start) == .orderedAscending })
-        let inBed = sleepData.filter({ $0.type == 0 })
-        let asleep = sleepData.filter({ $0.type == 1 })
-        self.processSleepDataset(inBed, inBed: true)
-        self.processSleepDataset(asleep, inBed: false)
+//        let sleepData = HealthDataManager.default.sleepData.sorted(by: { $0.start.compare($1.start) == .orderedAscending })
+//        let inBed = sleepData.filter({ $0.type == 0 })
+//        let asleep = sleepData.filter({ $0.type == 1 })
+//        self.processSleepDataset(inBed, inBed: true)
+//        self.processSleepDataset(asleep, inBed: false)
         self.resetChartView()
     }
     
@@ -325,8 +325,8 @@ class SleepVC: UIViewController {
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processECGDataset()
+//        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processECGDataset()
         self.resetChartView()
     }
     
@@ -527,16 +527,16 @@ class SleepVC: UIViewController {
     }
     
     @objc func onViewAllDataTapped() {
-        let sleepData = HealthDataManager.default.sleepData.sorted(by: { $0.start.compare($1.start) == .orderedDescending })
-        if sleepData.count == 0 {
-            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
-            return
-        }
-        if dayStartDate != Date.Max() {
-            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "SleepDataListVC") as! SleepDataListVC
-            dataListVC.data = sleepData
-            self.navigationController?.pushViewController(dataListVC, animated: true)
-        }
+//        let sleepData = HealthDataManager.default.sleepData.sorted(by: { $0.start.compare($1.start) == .orderedDescending })
+//        if sleepData.count == 0 {
+//            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
+//            return
+//        }
+//        if dayStartDate != Date.Max() {
+//            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "SleepDataListVC") as! SleepDataListVC
+//            dataListVC.data = sleepData
+//            self.navigationController?.pushViewController(dataListVC, animated: true)
+//        }
     }
     
 }

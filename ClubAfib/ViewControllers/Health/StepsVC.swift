@@ -60,7 +60,7 @@ class StepsVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)        
-        HealthDataManager.default.getStepsFromDevice()
+//        HealthDataManager.default.getStepsFromDevice()
     }
     
     @objc private func healthDataChanged(notification: NSNotification){
@@ -177,8 +177,8 @@ class StepsVC: UIViewController {
     }
     
     private func getStepCounts() {
-        let stepsData = HealthDataManager.default.stepsData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processDataset(stepsData)
+//        let stepsData = HealthDataManager.default.stepsData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processDataset(stepsData)
         self.resetChartView()
     }
     
@@ -319,8 +319,8 @@ class StepsVC: UIViewController {
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processECGDataset()
+//        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processECGDataset()
         self.resetChartView()
     }
     

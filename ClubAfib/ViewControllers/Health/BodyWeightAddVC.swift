@@ -85,18 +85,18 @@ class BodyWeightAddVC: UIViewController {
             }
         }
         showLoadingProgress(view: self.view)
-        ApiManager.sharedInstance.addWeightData((date, weight)) { (weightData, errorMsg) in
-            self.dismissLoadingProgress(view: self.view)
-            if let weightData = weightData {
-                HealthDataManager.default.addWeightData(weightData)
-                DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
-                }
-            }
-            else {
-                print("error on saving weight data: \(errorMsg ?? "")")
-            }
-        }
+//        ApiManager.sharedInstance.addWeightData((date, weight)) { (weightData, errorMsg) in
+//            self.dismissLoadingProgress(view: self.view)
+//            if let weightData = weightData {
+////                HealthDataManager.default.addWeightData(weightData)
+////                DispatchQueue.main.async {
+////                    self.navigationController?.popViewController(animated: true)
+////                }
+//            }
+//            else {
+//                print("error on saving weight data: \(errorMsg ?? "")")
+//            }
+//        }
     }
     
 }

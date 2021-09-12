@@ -79,8 +79,8 @@ class BloodPressureVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        HealthDataManager.default.getECGDataFromDevice()
-        HealthDataManager.default.getBloodPressureFromDevice()
+//        HealthDataManager.default.getECGDataFromDevice()
+//        HealthDataManager.default.getBloodPressureFromDevice()
     }
     
     @objc private func healthDataChanged(notification: NSNotification){
@@ -199,8 +199,8 @@ class BloodPressureVC: UIViewController {
     }
     
     private func getBloodPressure() {
-        let bloodPressureData = HealthDataManager.default.bloodPressureData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processBloodPressureDataset(bloodPressureData)
+//        let bloodPressureData = HealthDataManager.default.bloodPressureData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processBloodPressureDataset(bloodPressureData)
         self.resetChartView()
     }
     
@@ -367,8 +367,8 @@ class BloodPressureVC: UIViewController {
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processECGDataset()
+//        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+//        self.processECGDataset()
         self.resetChartView()
     }
     
@@ -585,17 +585,17 @@ class BloodPressureVC: UIViewController {
     
     @objc func onViewAllDataTapped() {
         //No data has been added by the user.  You can add data using the + found on top right corner of the page.
-        let bloodPressureData = HealthDataManager.default.bloodPressureData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-        if bloodPressureData.count == 0 {
-            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
-            return
-        }
-        if dayStartDate != Date.Max() {
-            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "BloodPressureDataListVC") as! BloodPressureDataListVC
-            
-            dataListVC.data = bloodPressureData
-            self.navigationController?.pushViewController(dataListVC, animated: true)
-        }
+//        let bloodPressureData = HealthDataManager.default.bloodPressureData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
+//        if bloodPressureData.count == 0 {
+//            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
+//            return
+//        }
+//        if dayStartDate != Date.Max() {
+//            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "BloodPressureDataListVC") as! BloodPressureDataListVC
+//            
+//            dataListVC.data = bloodPressureData
+//            self.navigationController?.pushViewController(dataListVC, animated: true)
+//        }
     }
     
 }
