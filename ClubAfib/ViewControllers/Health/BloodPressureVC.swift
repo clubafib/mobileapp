@@ -8,6 +8,7 @@
 
 import UIKit
 import HealthKit
+import SwiftyJSON
 
 class BloodPressureVC: UIViewController {
     let months = ["Jan", "Feb", "Mar",
@@ -49,11 +50,12 @@ class BloodPressureVC: UIViewController {
     var yearSystolicEntries = [RangeBarChartDataEntry]()
     var yearDiastolicEntries = [RangeBarChartDataEntry]()
     var ecgAFEntries = [BarChartDataEntry]()
-    var ecgData = [Ecg]()
     var ecgAF = [Ecg]()
     
     var selectedDataType: ChartDataViewType = .Week    
     
+    var dataLoads = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -70,6 +72,8 @@ class BloodPressureVC: UIViewController {
         self.viewAllData.isUserInteractionEnabled = true
         self.viewAllData.addGestureRecognizer(viewAllDataTap)
         
+        showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
         getECGData()
         getBloodPressure()
         
@@ -85,6 +89,8 @@ class BloodPressureVC: UIViewController {
     
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
+            self.showLoadingProgress(view: self.navigationController?.view)
+            self.dataLoads = 2
             self.getECGData()
             self.getBloodPressure()
         }
@@ -199,9 +205,43 @@ class BloodPressureVC: UIViewController {
     }
     
     private func getBloodPressure() {
-//        let bloodPressureData = HealthDataManager.default.bloodPressureData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-//        self.processBloodPressureDataset(bloodPressureData)
-        self.resetChartView()
+        //        let bloodPressureData = HealthDataManager.default.bloodPressureData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+        //        self.processBloodPressureDataset(bloodPressureData)
+DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getBloodPressure() {(satistics, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let dataset = satistics else {
+                    print("can't get blood pressure data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    return
+                }
+                
+                var bloodPressureData = [BloodPressure]()
+                for data in dataset {
+                    //[(Date, String, Double, String, Double)]
+                    bloodPressureData.append(
+                        BloodPressure(JSON([
+                            "date": data.0.toString,
+                            "sys_uuid": data.1,
+                            "systolic": data.2,
+                            "dia_uuid": data.3,
+                            "diastolic": data.4
+                        ])))
+                }
+                self.processBloodPressureDataset(bloodPressureData)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
     func resetStartDate(){
@@ -367,15 +407,34 @@ class BloodPressureVC: UIViewController {
     }
     
     private func getECGData(){
-//        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-//        self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getECG { (ecgData, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let ecgData = ecgData else {
+                    print("can't get ECG data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    return
+                }
+                self.processECGDataset(ecgData: ecgData)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
-    private func processECGDataset() {
+    private func processECGDataset(ecgData: [Ecg]) {
         ecgAFEntries.removeAll()
         ecgAF.removeAll()
-        for item in self.ecgData {
+        for item in ecgData {
             if HKElectrocardiogram.Classification(rawValue: item.type) == .atrialFibrillation {
                 ecgAF.append(item)
             }
@@ -385,7 +444,7 @@ class BloodPressureVC: UIViewController {
         }
         self.initEcgEntries(ecgAF)
     }
-    
+
     func initEcgEntries(_ ecgs:[Ecg]) {
         var entry:BarChartDataEntry! = nil
         let offset = 0.3
@@ -565,9 +624,22 @@ class BloodPressureVC: UIViewController {
     }
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
-        selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
-        self.processECGDataset()
-        resetChartView()
+        self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
+        HealthKitHelper.default.getECG { (ecgData, error) in
+            
+            if (error != nil) {
+                print(error!)
+            }
+            
+            guard let ecgData = ecgData else {
+                print("can't get ECG data")
+                return
+            }
+            self.processECGDataset(ecgData: ecgData)
+            DispatchQueue.main.async {
+                self.resetChartView()
+            }
+        }
     }
     
     @IBAction func onBackPressed(_ sender: Any) {
