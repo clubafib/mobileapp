@@ -45,6 +45,8 @@ class BodyWeightVC: UIViewController {
     
     var selectedDataType: ChartDataViewType = .Week    
         
+    var dataLoads = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -62,6 +64,7 @@ class BodyWeightVC: UIViewController {
         self.viewAllData.addGestureRecognizer(viewAllDataTap)
         
         showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
         getECGData()
         getWeights()
         
@@ -78,6 +81,7 @@ class BodyWeightVC: UIViewController {
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
             self.showLoadingProgress(view: self.navigationController?.view)
+            self.dataLoads = 2
             self.getECGData()
             self.getWeights()
         }
@@ -213,8 +217,11 @@ class BodyWeightVC: UIViewController {
                 }
                 self.processDataset(weightData, healthType: .BodyWeight)
                 DispatchQueue.main.async {
-                    self.resetChartView()
-                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
                 }
             }
         }
@@ -412,7 +419,11 @@ class BodyWeightVC: UIViewController {
                 }
                 self.processECGDataset(ecgData: ecgData)
                 DispatchQueue.main.async {
-                    self.resetChartView()
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
                 }
             }
         }

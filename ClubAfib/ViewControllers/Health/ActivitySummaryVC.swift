@@ -57,7 +57,9 @@ class ActivitySummaryVC: UIViewController {
 //    var ecgData = [Ecg]()
     var ecgAF = [Ecg]()
     
-    var selectedDataType: ChartDataViewType = .Week    
+    var selectedDataType: ChartDataViewType = .Week
+    
+    var dataLoads = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,6 +74,7 @@ class ActivitySummaryVC: UIViewController {
         initDates()
         
         showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
         getECGData()
         getActivitySummary()
                             
@@ -88,6 +91,7 @@ class ActivitySummaryVC: UIViewController {
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
             self.showLoadingProgress(view: self.navigationController?.view)
+            self.dataLoads = 2
             self.getECGData()
             self.getActivitySummary()
         }
@@ -262,8 +266,11 @@ class ActivitySummaryVC: UIViewController {
                 self.processDataset(exerciseData1, healthType: .ActivityExercise)
                 self.processDataset(standData1, healthType: .ActivityStand)
                 DispatchQueue.main.async {
-                    self.resetChartView()
-                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
                 }
             }
         }
@@ -508,11 +515,16 @@ class ActivitySummaryVC: UIViewController {
                 
                 guard let ecgData = ecgData else {
                     print("can't get ECG data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
                     return
                 }
                 self.processECGDataset(ecgData: ecgData)
                 DispatchQueue.main.async {
-                    self.resetChartView()
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
                 }
             }
         }
