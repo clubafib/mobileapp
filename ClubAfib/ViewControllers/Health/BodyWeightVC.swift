@@ -40,7 +40,6 @@ class BodyWeightVC: UIViewController {
     var monthWeightEntries = [ChartDataEntry]()
     var yearWeightEntries = [ChartDataEntry]()
     var ecgAFEntries = [BarChartDataEntry]()
-    var ecgData = [Ecg]()
     var ecgAF = [Ecg]()
     
     var selectedDataType: ChartDataViewType = .Week    
