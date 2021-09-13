@@ -67,10 +67,10 @@ class ApiManager: NSObject {
 //    let apiSetSleepData             = "health/sleep"
 //    let apiAddSleepData             = "health/sleep/add"
 //    let apiDeleteSleepData          = "health/sleep/delete"
-//    let apiGetAlcoholUseData        = "health/alcohol"
-//    let apiSetAlcoholUseData        = "health/alcohol"
-//    let apiAddAlcoholUseData        = "health/alcohol/add"
-//    let apiDeleteAlcoholUseData     = "health/alcohol/delete"
+    let apiGetAlcoholUseData        = "health/alcohol"
+    let apiSetAlcoholUseData        = "health/alcohol"
+    let apiAddAlcoholUseData        = "health/alcohol/add"
+    let apiDeleteAlcoholUseData     = "health/alcohol/delete"
 //    let apiGetBloodPressureData     = "health/blood_pressure"
 //    let apiSetBloodPressureData     = "health/blood_pressure"
 //    let ecgDataUri     = "health/ekg"
@@ -1280,6 +1280,7 @@ class ApiManager: NSObject {
             }
         }
     }
+    */
     
     // Get AlcoholUse Data
     func getAlcoholUseData(complete: @escaping ([AlcoholUse]?, String?) -> Void) -> Void {
@@ -1405,7 +1406,8 @@ class ApiManager: NSObject {
             }
         }
     }
-    
+
+    /*
     // Get Blood Pressure Data
     func getBloodPressureData(complete: @escaping ([BloodPressure]?, String?) -> Void) -> Void {
         requestWithToken(method: .get, endPoint: apiGetBloodPressureData, params: nil) { (response, error, resoponseCode) in
