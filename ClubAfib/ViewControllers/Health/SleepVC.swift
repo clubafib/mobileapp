@@ -8,6 +8,7 @@
 
 import UIKit
 import HealthKit
+import SwiftyJSON
 
 class SleepVC: UIViewController {
     
@@ -43,11 +44,12 @@ class SleepVC: UIViewController {
     var yearAsleepEntries = [BarChartDataEntry]()
     
     var ecgAFEntries = [BarChartDataEntry]()
-    var ecgData = [Ecg]()
     var ecgAF = [Ecg]()
     
     var selectedDataType: ChartDataViewType = .Week    
     
+    var dataLoads = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -64,6 +66,8 @@ class SleepVC: UIViewController {
         self.viewAllData.isUserInteractionEnabled = true
         self.viewAllData.addGestureRecognizer(viewAllDataTap)
         
+        showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
         getECGData()
         getSleepAnalysis()
         
@@ -77,6 +81,8 @@ class SleepVC: UIViewController {
     
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
+            self.showLoadingProgress(view: self.navigationController?.view)
+            self.dataLoads = 2
             self.getECGData()
             self.getSleepAnalysis()
         }
@@ -195,12 +201,42 @@ class SleepVC: UIViewController {
     }
     
     private func getSleepAnalysis() {
-//        let sleepData = HealthDataManager.default.sleepData.sorted(by: { $0.start.compare($1.start) == .orderedAscending })
-//        let inBed = sleepData.filter({ $0.type == 0 })
-//        let asleep = sleepData.filter({ $0.type == 1 })
-//        self.processSleepDataset(inBed, inBed: true)
-//        self.processSleepDataset(asleep, inBed: false)
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getSleepAnalysis() {(satistics, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let dataset = satistics else {
+                    print("can't get sleep data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    return
+                }
+                
+                var sleepData = [Sleep]()
+                for data in dataset {
+                    sleepData.append(
+                        Sleep(JSON([
+                            "uuid": data.0,
+                            "start": data.1.toString,
+                            "end": data.2.toString,
+                            "type": data.3
+                        ])))
+                }
+                let inBed = sleepData.filter({ $0.type == 0 })
+                let asleep = sleepData.filter({ $0.type == 1 })
+                self.processSleepDataset(inBed, inBed: true)
+                self.processSleepDataset(asleep, inBed: false)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
     func resetStartDate(){
@@ -325,15 +361,33 @@ class SleepVC: UIViewController {
     }
     
     private func getECGData(){
-//        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-//        self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getECG { (ecgData, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let ecgData = ecgData else {
+                    print("can't get ECG data")
+                    return
+                }
+                self.processECGDataset(ecgData: ecgData)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
-    private func processECGDataset() {
+    private func processECGDataset(ecgData: [Ecg]) {
         ecgAFEntries.removeAll()
         ecgAF.removeAll()
-        for item in self.ecgData {
+        for item in ecgData {
             if HKElectrocardiogram.Classification(rawValue: item.type) == .atrialFibrillation {
                 ecgAF.append(item)
             }
@@ -343,7 +397,7 @@ class SleepVC: UIViewController {
         }
         self.initEcgEntries(ecgAF)
     }
-    
+
     func initEcgEntries(_ ecgs:[Ecg]) {
         var entry:BarChartDataEntry! = nil
         let offset = 0.3
@@ -508,9 +562,22 @@ class SleepVC: UIViewController {
     }
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
-        selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex + 1) ?? .Week
-        self.processECGDataset()
-        resetChartView()
+        self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
+        HealthKitHelper.default.getECG { (ecgData, error) in
+            
+            if (error != nil) {
+                print(error!)
+            }
+            
+            guard let ecgData = ecgData else {
+                print("can't get ECG data")
+                return
+            }
+            self.processECGDataset(ecgData: ecgData)
+            DispatchQueue.main.async {
+                self.resetChartView()
+            }
+        }
     }
     
     @IBAction func onBackPressed(_ sender: Any) {
