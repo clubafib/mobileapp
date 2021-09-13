@@ -72,7 +72,7 @@ class BloodPressureVC: UIViewController {
         self.viewAllData.isUserInteractionEnabled = true
         self.viewAllData.addGestureRecognizer(viewAllDataTap)
         
-        showLoadingProgress(view: self.navigationController?.view)
+        self.showLoadingProgress(view: self.navigationController?.view)
         self.dataLoads = 2
         getECGData()
         getBloodPressure()
@@ -205,9 +205,7 @@ class BloodPressureVC: UIViewController {
     }
     
     private func getBloodPressure() {
-        //        let bloodPressureData = HealthDataManager.default.bloodPressureData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        //        self.processBloodPressureDataset(bloodPressureData)
-DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .background).async {
             HealthKitHelper.default.getBloodPressure() {(satistics, error) in
                 
                 if (error != nil) {

@@ -55,7 +55,7 @@ class StepsVC: UIViewController {
         initChartView()
         initDates()
 
-        showLoadingProgress(view: self.navigationController?.view)
+        self.showLoadingProgress(view: self.navigationController?.view)
         self.dataLoads = 2
         getStepCounts()
         getECGData()

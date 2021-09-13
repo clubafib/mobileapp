@@ -62,7 +62,7 @@ class BodyWeightVC: UIViewController {
         self.viewAllData.isUserInteractionEnabled = true
         self.viewAllData.addGestureRecognizer(viewAllDataTap)
         
-        showLoadingProgress(view: self.navigationController?.view)
+        self.showLoadingProgress(view: self.navigationController?.view)
         self.dataLoads = 2
         getECGData()
         getWeights()
