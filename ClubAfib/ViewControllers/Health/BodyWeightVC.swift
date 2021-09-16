@@ -70,13 +70,6 @@ class BodyWeightVC: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-//        HealthDataManager.default.getHeartRatesFromDevice()
-//        HealthDataManager.default.getWeightsFromDevice()
-    }
-    
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
             self.showLoadingProgress(view: self.navigationController?.view)
@@ -194,35 +187,47 @@ class BodyWeightVC: UIViewController {
     
     private func getWeights() {
         DispatchQueue.global(qos: .background).async {
-            HealthKitHelper.default.getBodyWeightData() {(satistics, error) in
-                
+            self.getWeightsData() {(weightData, error) in
                 if (error != nil) {
                     print(error!)
-                }
-                
-                guard let dataset = satistics else {
-                    print("can't get weight data")
-                    self.dismissLoadingProgress(view: self.navigationController?.view)
-                    return
-                }
-                
-                var weightData = [Weight]()
-                for data in dataset {
-                    weightData.append(
-                        Weight(JSON([
-                            "date": data.0.toString,
-                            "weight": data.1
-                        ])))
-                }
-                self.processDataset(weightData, healthType: .BodyWeight)
-                DispatchQueue.main.async {
-                    self.dataLoads = self.dataLoads - 1
-                    if (self.dataLoads == 0) {
+                    DispatchQueue.main.async {
                         self.dismissLoadingProgress(view: self.navigationController?.view)
-                        self.resetChartView()
+                        return
+                    }
+                }
+                if (weightData != nil) {
+                    self.processDataset(weightData!, healthType: .BodyWeight)
+                    DispatchQueue.main.async {
+                        self.dataLoads = self.dataLoads - 1
+                        if (self.dataLoads == 0) {
+                            self.dismissLoadingProgress(view: self.navigationController?.view)
+                            self.resetChartView()
+                        }
                     }
                 }
             }
+        }
+    }
+    
+    private func getWeightsData(completion: @escaping ([Weight]?, Error?) -> Swift.Void) {
+        HealthKitHelper.default.getBodyWeightData() {(satistics, error) in
+            if (error != nil) {
+                completion(nil, error)
+                return
+            }
+            guard let dataset = satistics else {
+                completion(nil, NSError(domain:"can't get weight data", code:0, userInfo:nil))
+                return
+            }
+            var weightData = [Weight]()
+            for data in dataset {
+                weightData.append(
+                    Weight(JSON([
+                        "date": data.0.toString,
+                        "weight": data.1
+                    ])))
+            }
+            completion(weightData, nil)
         }
     }
     
@@ -644,18 +649,30 @@ class BodyWeightVC: UIViewController {
     }
     
     @objc func onViewAllDataTapped() {        
-//        let weightData = HealthDataManager.default.weightData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-//        if weightData.count == 0 {
-//            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
-//            return
-//        }
-//        if dayStartDate != Date.Max() {
-//            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "BodyWeightDataListVC") as! BodyWeightDataListVC            
-//            dataListVC.data = weightData
-//            self.navigationController?.pushViewController(dataListVC, animated: true)
-//        }
+        self.showLoadingProgress(view: self.navigationController?.view)
+        DispatchQueue.global(qos: .background).async {
+            self.getWeightsData() {(weightData, error) in
+                DispatchQueue.main.async {
+                    if (error != nil) {
+                        print(error!)
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        return
+                    }
+                    if weightData == nil || weightData!.count == 0 {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
+                        return
+                    }
+                    if self.dayStartDate != Date.Max() {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "BodyWeightDataListVC") as! BodyWeightDataListVC
+                        dataListVC.data = weightData!
+                        self.navigationController?.pushViewController(dataListVC, animated: true)
+                    }
+                }
+            }
+        }
     }
-    
 }
 
 extension BodyWeightVC: ChartViewDelegate {
