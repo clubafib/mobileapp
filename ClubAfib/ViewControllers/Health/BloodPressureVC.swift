@@ -80,13 +80,6 @@ class BloodPressureVC: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-//        HealthDataManager.default.getECGDataFromDevice()
-//        HealthDataManager.default.getBloodPressureFromDevice()
-    }
-    
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
             self.showLoadingProgress(view: self.navigationController?.view)
@@ -206,39 +199,50 @@ class BloodPressureVC: UIViewController {
     
     private func getBloodPressure() {
         DispatchQueue.global(qos: .background).async {
-            HealthKitHelper.default.getBloodPressure() {(satistics, error) in
-                
+            self.getBloodPressureData() {(bloodPressureData, error) in
                 if (error != nil) {
                     print(error!)
-                }
-                
-                guard let dataset = satistics else {
-                    print("can't get blood pressure data")
-                    self.dismissLoadingProgress(view: self.navigationController?.view)
-                    return
-                }
-                
-                var bloodPressureData = [BloodPressure]()
-                for data in dataset {
-                    //[(Date, String, Double, String, Double)]
-                    bloodPressureData.append(
-                        BloodPressure(JSON([
-                            "date": data.0.toString,
-                            "sys_uuid": data.1,
-                            "systolic": data.2,
-                            "dia_uuid": data.3,
-                            "diastolic": data.4
-                        ])))
-                }
-                self.processBloodPressureDataset(bloodPressureData)
-                DispatchQueue.main.async {
-                    self.dataLoads = self.dataLoads - 1
-                    if (self.dataLoads == 0) {
+                    DispatchQueue.main.async {
                         self.dismissLoadingProgress(view: self.navigationController?.view)
-                        self.resetChartView()
+                        return
+                    }
+                }
+                if (bloodPressureData != nil) {
+                    self.processBloodPressureDataset(bloodPressureData!)
+                    DispatchQueue.main.async {
+                        self.dataLoads = self.dataLoads - 1
+                        if (self.dataLoads == 0) {
+                            self.dismissLoadingProgress(view: self.navigationController?.view)
+                            self.resetChartView()
+                        }
                     }
                 }
             }
+        }
+    }
+    
+    private func getBloodPressureData(completion: @escaping ([BloodPressure]?, Error?) -> Swift.Void) {
+        HealthKitHelper.default.getBloodPressure() {(satistics, error) in
+            if (error != nil) {
+                completion(nil, error)
+                return
+            }
+            guard let dataset = satistics else {
+                completion(nil, NSError(domain:"can't get blood pressure data", code:0, userInfo:nil))
+                return
+            }
+            var bloodPressureData = [BloodPressure]()
+            for data in dataset {
+                bloodPressureData.append(
+                    BloodPressure(JSON([
+                        "date": data.0.toString,
+                        "sys_uuid": data.1,
+                        "systolic": data.2,
+                        "dia_uuid": data.3,
+                        "diastolic": data.4
+                    ])))
+            }
+            completion(bloodPressureData, nil)
         }
     }
     
@@ -654,20 +658,30 @@ class BloodPressureVC: UIViewController {
     }
     
     @objc func onViewAllDataTapped() {
-        //No data has been added by the user.  You can add data using the + found on top right corner of the page.
-//        let bloodPressureData = HealthDataManager.default.bloodPressureData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-//        if bloodPressureData.count == 0 {
-//            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
-//            return
-//        }
-//        if dayStartDate != Date.Max() {
-//            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "BloodPressureDataListVC") as! BloodPressureDataListVC
-//            
-//            dataListVC.data = bloodPressureData
-//            self.navigationController?.pushViewController(dataListVC, animated: true)
-//        }
+        self.showLoadingProgress(view: self.navigationController?.view)
+        DispatchQueue.global(qos: .background).async {
+            self.getBloodPressureData() {(bloodPressureData, error) in
+                DispatchQueue.main.async {
+                    if (error != nil) {
+                        print(error!)
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        return
+                    }
+                    if bloodPressureData == nil || bloodPressureData!.count == 0 {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
+                        return
+                    }
+                    if self.dayStartDate != Date.Max() {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "BloodPressureDataListVC") as! BloodPressureDataListVC                        
+                        dataListVC.data = bloodPressureData!
+                        self.navigationController?.pushViewController(dataListVC, animated: true)
+                    }
+                }
+            }
+        }
     }
-    
 }
 
 extension BloodPressureVC: ChartViewDelegate {
