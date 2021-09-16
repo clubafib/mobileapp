@@ -596,18 +596,28 @@ class AlcoholUseVC: UIViewController {
     }
     
     @objc func onViewAllDataTapped() {
-//        let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-//        if alcoholUseData.count == 0 {
-//            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
-//            return
-//        }
-//        if dayStartDate != Date.Max() {
-//            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "AlcoholUseDataListVC") as! AlcoholUseDataListVC
-//            dataListVC.data = alcoholUseData
-//            self.navigationController?.pushViewController(dataListVC, animated: true)
-//        }
+        self.showLoadingProgress(view: self.navigationController?.view)
+        DispatchQueue.global(qos: .background).async {
+            ApiManager.sharedInstance.getAlcoholUseData() { (alcoholUsesData, errorMsg) in
+                if let alcoholUsesData = alcoholUsesData {
+                    if alcoholUsesData.count == 0 {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
+                        return
+                    }
+                    if self.dayStartDate != Date.Max() {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "AlcoholUseDataListVC") as! AlcoholUseDataListVC
+                        dataListVC.data = alcoholUsesData
+                        self.navigationController?.pushViewController(dataListVC, animated: true)
+                    }
+                } else {
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    print("error on getting alcohol used data: \(errorMsg ?? "")")
+                }
+            }
+        }
     }
-    
 }
 
 extension AlcoholUseVC: ChartViewDelegate {
