@@ -54,7 +54,6 @@ class ActivitySummaryVC: UIViewController {
     var yearStandEntries = [BarChartDataEntry]()
     
     var ecgAFEntries = [BarChartDataEntry]()
-//    var ecgData = [Ecg]()
     var ecgAF = [Ecg]()
     
     var selectedDataType: ChartDataViewType = .Week
