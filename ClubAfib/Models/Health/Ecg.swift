@@ -18,15 +18,11 @@ class Ecg : Codable {
     var type: Int = 0
     var date: Date {
         get{
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssXXXXX"
-            return df.date(from: self.dateTxt)!
+            return DateFormatter.standardDateFormatter.date(from: self.dateTxt)!
         }
         
         set(newValue) {
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssXXXXX"
-            self.dateTxt = df.string(from: newValue)
+            self.dateTxt = DateFormatter.standardDateFormatter.string(from: newValue)
         }
     }
     var dateTxt = "1970-01-01 00:00:00"

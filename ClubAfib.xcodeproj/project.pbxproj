@@ -294,6 +294,7 @@
 		B6E0A20324F04F2B000CAB2A /* Goods.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E0A20224F04F2B000CAB2A /* Goods.swift */; };
 		B6E0A20524F0506C000CAB2A /* GoodsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E0A20424F0506C000CAB2A /* GoodsViewCell.swift */; };
 		E8C6F597199FE754ADBDAD62 /* Pods_Share.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74258BEBFD1705F2284DD611 /* Pods_Share.framework */; };
+		EF01645526F437F300147B07 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF01645426F437F300147B07 /* DateFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -645,6 +646,7 @@
 		D39CDD4FB3B17A62A7F7E1A6 /* Pods_ClubAfib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ClubAfib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE5645EFCE1220FFF77E85E2 /* Pods-ClubAfib WatchKit App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClubAfib WatchKit App.release.xcconfig"; path = "Target Support Files/Pods-ClubAfib WatchKit App/Pods-ClubAfib WatchKit App.release.xcconfig"; sourceTree = "<group>"; };
 		E4BA1DD761A3D7754DC3E257 /* Pods_ClubAfib_WatchKit_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ClubAfib_WatchKit_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF01645426F437F300147B07 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -851,6 +853,7 @@
 				B62AB62F24C83D2A00AF0C32 /* UIView.swift */,
 				B679CA4724E7862C00792DEE /* JSON.swift */,
 				B679CA4B24E7C1DF00792DEE /* Date.swift */,
+				EF01645426F437F300147B07 /* DateFormatter.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1732,6 +1735,7 @@
 				B6DEBC3124D1C3910032F754 /* RadarChartView.swift in Sources */,
 				B6C7BA4E24F8528B0061925E /* AlcoholUseVC.swift in Sources */,
 				B6DEBC7324D1C3910032F754 /* HorizontalBarHighlighter.swift in Sources */,
+				EF01645526F437F300147B07 /* DateFormatter.swift in Sources */,
 				B67732AC24EE8DF300EEAA82 /* Weight.swift in Sources */,
 				B6DEBCAC24D1C3910032F754 /* Platform+Touch Handling.swift in Sources */,
 				B6DEBC6B24D1C3910032F754 /* IAxisValueFormatter.swift in Sources */,

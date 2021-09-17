@@ -15,9 +15,7 @@ class HeartRate: Codable, SingleValueHealthData {
     @objc dynamic var id = 0
     @objc dynamic var date: Date {
         get{
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssXXXXX"
-            if let dt = df.date(from: self.dateTxt) {
+            if let dt = DateFormatter.standardDateFormatter.date(from: self.dateTxt) {
                 return dt
             } else {
                 return Date()
@@ -25,9 +23,7 @@ class HeartRate: Codable, SingleValueHealthData {
         }
         
         set(newValue) {
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssXXXXX"
-            self.dateTxt = df.string(from: newValue)            
+            self.dateTxt = DateFormatter.standardDateFormatter.string(from: newValue)
         }
     }
     var dateTxt = "1970-01-01T00:00:00-00:00"
