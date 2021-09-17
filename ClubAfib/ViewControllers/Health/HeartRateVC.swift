@@ -45,12 +45,9 @@ class HeartRateVC: UIViewController {
     var ecgLHEntries = [BarChartDataEntry]()
     var ecgICCSEntries = [BarChartDataEntry]()
     
-    var m_hrData = [HeartRate]()
-    
     var timer: Timer!
     
     var selectedDataType: ChartDataViewType = .Week    
-    var ecgData = [Ecg]()
     var ecgSR = [Ecg]()
     var ecgAF = [Ecg]()
     var ecgLH = [Ecg]()
@@ -58,6 +55,8 @@ class HeartRateVC: UIViewController {
     var chartHeight:CGFloat = 100
     var m_vwData = [UIView]()
     
+    var dataLoads = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
                 
@@ -116,41 +115,13 @@ class HeartRateVC: UIViewController {
         initChartView()
         initEcgCharts()
         initDates()
+        self.showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
         getHeartRates()
         getECGData()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        ApiManager.sharedInstance.getLogo { (url) in
-            if let url = url {
-                self.imgLogo.sd_setImage(with: URL(string: url)!, completed: nil)
-            }
-        }
-        HealthKitHelper.default.getECG { (data, error) in
-            if let dataset = data {
-                var hasNew = false
-                for newItem in dataset {
-                    if let last = self.ecgData.last {
-                        if last.date < newItem.date {
-                            self.ecgData.append(newItem)
-                            hasNew = true
-                        }
-                    } else {
-                        self.ecgData.append(newItem)
-                        hasNew = true
-                    }
-                }
-                if hasNew {
-                    self.processECGDataset()
-                    self.resetChartView()
-                }
-            }            
-        }
-    }
-    
     
     private func initChartView() {
         heartRateChartView.chartDescription?.enabled = false
@@ -250,7 +221,7 @@ class HeartRateVC: UIViewController {
         }
     }
     
-    private func processECGDataset() {
+    private func processECGDataset(ecgData: [Ecg]) {
         ecgSREntries.removeAll()
         ecgAFEntries.removeAll()
         ecgLHEntries.removeAll()
@@ -260,7 +231,7 @@ class HeartRateVC: UIViewController {
         ecgLH.removeAll()
         ecgICCS.removeAll()
         
-        for item in self.ecgData {
+        for item in ecgData {
             switch HKElectrocardiogram.Classification(rawValue: item.type) {
             case .sinusRhythm:
                 ecgSR.append(item)
@@ -381,7 +352,12 @@ class HeartRateVC: UIViewController {
     }
     
     @objc private func healthDataChanged(notification: NSNotification){
-        self.getHeartRates()
+        DispatchQueue.main.async {
+            self.showLoadingProgress(view: self.navigationController?.view)
+            self.dataLoads = 2
+            self.getECGData()
+            self.getHeartRates()
+        }
     }
     
     private func initDates() {
@@ -428,15 +404,53 @@ class HeartRateVC: UIViewController {
     }
     
     private func getHeartRates() {
-//        self.m_hrData = HealthDataManager.default.heartRateData
-//        self.processDataset()
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getHeartRates() {(heartRates, error) in
+                if (error != nil) {
+                    print(error!)
+                }
+                guard let heartRates = heartRates else {
+                    print("can't get heart rate data")
+                    DispatchQueue.main.async {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                    }
+                    return
+                }
+                self.processDataset(heartRates: heartRates)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
     private func getECGData(){
-//        self.ecgData = HealthDataManager.default.ecgData
-//        self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getECG { (ecgData, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let ecgData = ecgData else {
+                    print("can't get ECG data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    return
+                }
+                self.processECGDataset(ecgData: ecgData)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
     func resetStartDate(){
@@ -458,8 +472,8 @@ class HeartRateVC: UIViewController {
         }
     }
     
-    private func processDataset() {
-        let dataset = self.m_hrData
+    private func processDataset(heartRates:[HeartRate]) {
+        let dataset = heartRates
         if (dataset.count > 0) {
             let calendar = Calendar.current
             for data in dataset {
@@ -722,9 +736,22 @@ class HeartRateVC: UIViewController {
     }
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
-        selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
-        self.processECGDataset()
-        resetChartView()
+        self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
+        HealthKitHelper.default.getECG { (ecgData, error) in
+            
+            if (error != nil) {
+                print(error!)
+            }
+            
+            guard let ecgData = ecgData else {
+                print("can't get ECG data")
+                return
+            }
+            self.processECGDataset(ecgData: ecgData)
+            DispatchQueue.main.async {
+                self.resetChartView()
+            }
+        }
     }
 
     @IBAction func onShareButtonPressed(_ sender: Any) {
