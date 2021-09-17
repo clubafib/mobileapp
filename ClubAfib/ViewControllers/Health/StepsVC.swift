@@ -64,11 +64,6 @@ class StepsVC: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)        
-//        HealthDataManager.default.getStepsFromDevice()
-    }
-    
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
             self.dataLoads = 2

@@ -149,7 +149,6 @@ class HeartRateVC: UIViewController {
                 }
             }            
         }
-//        HealthDataManager.default.getHeartRatesFromDevice()
     }
     
     

@@ -62,8 +62,6 @@ class HomeTabVC: UITabBarController {
             DispatchQueue.main.async {
                 if self.requireAutoLogin {
                     self.autoLogin()
-                } else {
-//                    HealthDataManager.default.fetchData()
                 }
             }    
         }
@@ -145,7 +143,6 @@ class HomeTabVC: UITabBarController {
                 
                 if success {
                     self.getDoctorList()
-//                    HealthDataManager.default.fetchData()
                 }
                 else{
                     let signinVC = AUTHENTICATION_STORYBOARD.instantiateViewController(withIdentifier: "SigninVC") as! SigninVC
