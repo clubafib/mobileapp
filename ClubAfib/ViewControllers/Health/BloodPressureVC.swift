@@ -83,8 +83,7 @@ class BloodPressureVC: UIViewController {
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
             self.showLoadingProgress(view: self.navigationController?.view)
-            self.dataLoads = 2
-            self.getECGData()
+            self.dataLoads = 1
             self.getBloodPressure()
         }
     }

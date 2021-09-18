@@ -66,8 +66,7 @@ class StepsVC: UIViewController {
     
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
-            self.dataLoads = 2
-            self.getECGData()
+            self.dataLoads = 1
             self.getStepCounts()
         }
     }
