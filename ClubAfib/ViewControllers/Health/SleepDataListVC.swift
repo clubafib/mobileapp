@@ -56,21 +56,11 @@ class SleepDataListVC: UIViewController {
                                 self.showSimpleAlert(title: "HealthKit Permission Denied", message: "Please go to Settings -> Privacy -> Health -> App and turn on all permissions", complete: nil)
                             }
                         }
+                    } else {
+                        NotificationCenter.default.post(name: Notification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
                     }
                 }
             }
-            
-//            ApiManager.sharedInstance.deleteSleepData(sleep) { (success, errorMsg) in
-//                if success {
-//                    try! RealmManager.default.realm.write {
-//                        sleep.status = 2 // delete status
-//                    }
-////                    HealthDataManager.default.deleteSleepData(sleep)
-//                }
-//                else {
-//                    print("error on saving sleep data: \(errorMsg ?? "")")
-//                }
-//            }
         }
     }
     
