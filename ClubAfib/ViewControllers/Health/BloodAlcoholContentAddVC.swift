@@ -66,36 +66,20 @@ class BloodAlcoholContentAddVC: UIViewController {
     }
 
     @IBAction func onAddButtonPressed(_ sender: Any) {
-//        HealthKitHelper.default.saveBloodAlcoholContent(alcohol: alcohol, forDate: date) { success, error in
-//            if !success || error != nil {
-//                print("Error: \(String(describing: error))")
-//
-//                DispatchQueue.main.async {
-//                    self.showSimpleAlert(title: "HealthKit Permission Denied", message: "Please go to Settings -> Privacy -> Health -> App and turn on all permissions", complete: nil)
-//                }
-//            }
-//            else {
-//                print("Saved: \(success)")
-//                NotificationCenter.default.post(name: Notification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
-//                DispatchQueue.main.async {
-//                    self.navigationController?.popViewController(animated: true)
-//                }
-//
-//            }
-//        }
-        showLoadingProgress(view: self.view)
-//        ApiManager.sharedInstance.addAlcoholUseData((date, alcohol)) { (alcholUseData, errorMsg) in
-//            self.dismissLoadingProgress(view: self.view)
-//            if let alcholUseData = alcholUseData {
-////                HealthDataManager.default.addAlcoholUseData(alcholUseData)
-////                DispatchQueue.main.async {
-////                    self.navigationController?.popViewController(animated: true)
-////                }
-//            }
-//            else {
-//                print("error on saving alcohol use data: \(errorMsg ?? "")")
-//            }
-//        }
+        HealthKitHelper.default.saveBloodAlcoholContent(alcohol: alcohol, forDate: date) { success, error in
+            DispatchQueue.main.async {
+                if !success || error != nil {
+                    print("Error: \(String(describing: error))")
+                    self.showSimpleAlert(title: "HealthKit Permission Denied", message: "Please go to Settings -> Privacy -> Health -> App and turn on all permissions", complete: nil)
+                }
+                else {
+                    print("Saved: \(success)")
+                    NotificationCenter.default.post(name: Notification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
+                    self.navigationController?.popViewController(animated: true)
+                    
+                }
+            }
+        }
     }
     
 }

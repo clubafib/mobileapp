@@ -77,40 +77,22 @@ class BloodPressureAddVC: UIViewController {
     }
 
     @IBAction func onAddButtonPressed(_ sender: Any) {
-        self.showLoadingProgress(view: self.view)
         HealthKitHelper.default.saveBloodPressure(systolic: systolic, diastolic: diastolic, forDate: date) { data, error in
-            var bloodPressure: (Date, String, Double, String, Double)
-            if error == nil, let data = data {
-                bloodPressure = data
-            }
-            else {
-                bloodPressure = (self.date, "", self.systolic, "", self.diastolic)
-                
-                print("Error: \(String(describing: error))")
-                if error is HealthKitHelper.HealthkitSetupError {
-                    DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                if error != nil {
+                    print("Error: \(String(describing: error))")
+                    if error is HealthKitHelper.HealthkitSetupError {
                         self.showSimpleAlert(title: "HealthKit Permission Denied", message: "Please go to Settings -> Privacy -> Health -> App and turn on all permissions", complete: nil)
+                    } else {
+                        self.showSimpleAlert(title: "Error", message: "Error on adding blood pressure data, please try again later", complete: nil)
                     }
+                } else {
+                    NotificationCenter.default.post(name: Notification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
                 }
+                self.navigationController?.popViewController(animated: true)
             }
-//            ApiManager.sharedInstance.addBloodPressureData(bloodPressure) { (bloodPressureData, errorMsg) in
-//                self.dismissLoadingProgress(view: self.view)
-//                if let bloodPressureData = bloodPressureData {
-////                    HealthDataManager.default.addBloodPressureData(bloodPressureData)
-////                    DispatchQueue.main.async {
-////                        self.navigationController?.popViewController(animated: true)
-////                    }
-//                }
-//                else {
-//                    print("error on saving blood pressure data: \(errorMsg ?? "")")
-//                    DispatchQueue.main.async {
-//                        self.showSimpleAlert(title: "Error", message: "Error on adding blood pressure data, please try again later", complete: nil)
-//                    }
-//                }
-//            }
         }
     }
-    
 }
 
 extension BloodPressureAddVC: UITableViewDelegate, UITableViewDataSource {
