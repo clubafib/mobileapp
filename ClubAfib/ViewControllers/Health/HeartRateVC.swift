@@ -106,15 +106,14 @@ class HeartRateVC: UIViewController {
         scvwContent.contentSize = CGSize(width: 0, height: tblData.frame.size.height + tblData.frame.origin.y)
         tblData.reloadData()
         
-        refreshData()
+        fetchData()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
     
-    private func refreshData() {
+    private func fetchData() {
         self.showLoadingProgress(view: self.navigationController?.view)
         self.dataLoads = 2
-        self.dayStartDate = Date.Max()
         
         initChartView()
         initEcgCharts()
@@ -347,7 +346,7 @@ class HeartRateVC: UIViewController {
     
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
-            self.refreshData()
+            self.fetchData()
         }
     }
     
@@ -397,7 +396,8 @@ class HeartRateVC: UIViewController {
     private func calculateHealthKitStartDate() -> (startDate:Date, endDate:Date) {
         let calendar = Calendar.current
         var startDate = Date()
-        let endDate = calendar.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+        var endDate = calendar.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+        endDate = calendar.startOfDay(for: endDate)
         switch self.selectedDataType {
         case ChartDataViewType.Day:
             startDate = calendar.date(byAdding: .day, value: -30, to: endDate)!
@@ -424,10 +424,23 @@ class HeartRateVC: UIViewController {
         return (startDate, endDate)
     }
     
+    var previousHeartRatesQueryStartDate:Date?
+    var previousHeartRatesQueryEndDate:Date?
     private func getHeartRates() {
         let result = self.calculateHealthKitStartDate()
         let startDate = result.startDate
         let endDate = result.endDate
+        if (previousHeartRatesQueryStartDate != nil && previousHeartRatesQueryEndDate != nil) &&
+            startDate >= previousHeartRatesQueryStartDate! &&
+            endDate <= previousHeartRatesQueryEndDate! {
+            DispatchQueue.main.async {
+                self.dataLoads = self.dataLoads - 1
+                if (self.dataLoads == 0) {
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    self.resetChartView()
+                }
+            }
+        }
         DispatchQueue.global(qos: .background).async {
             HealthKitHelper.default.getHeartRates(startDate: startDate, endDate: endDate) {(heartRates, error) in
                 if (error != nil) {
@@ -440,6 +453,8 @@ class HeartRateVC: UIViewController {
                     }
                     return
                 }
+                self.previousHeartRatesQueryStartDate = startDate
+                self.previousHeartRatesQueryEndDate = endDate
                 self.processDataset(heartRates: heartRates)
                 DispatchQueue.main.async {
                     self.dataLoads = self.dataLoads - 1
@@ -757,7 +772,7 @@ class HeartRateVC: UIViewController {
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
         self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
-        self.refreshData()
+        self.fetchData()
     }
 
     @IBAction func onShareButtonPressed(_ sender: Any) {
