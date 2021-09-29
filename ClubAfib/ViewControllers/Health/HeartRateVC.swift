@@ -106,11 +106,19 @@ class HeartRateVC: UIViewController {
         scvwContent.contentSize = CGSize(width: 0, height: tblData.frame.size.height + tblData.frame.origin.y)
         tblData.reloadData()
         
+        refreshData()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
+    }
+    
+    private func refreshData() {
+        self.showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
+        self.dayStartDate = Date.Max()
+        
         initChartView()
         initEcgCharts()
         initDates()
-        self.showLoadingProgress(view: self.navigationController?.view)
-        self.dataLoads = 2
         getHeartRates()
         getECGData()
         
@@ -339,9 +347,7 @@ class HeartRateVC: UIViewController {
     
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
-            self.showLoadingProgress(view: self.navigationController?.view)
-            self.dataLoads = 1
-            self.getHeartRates()
+            self.refreshData()
         }
     }
     
@@ -350,15 +356,15 @@ class HeartRateVC: UIViewController {
         let now = Date()
         
         // Set the anchor date to start of today
-        self.dayStartDate = calendar.startOfDay(for: now)
-        
+        let anchorDate = calendar.startOfDay(for: now)
+
         // set the day end date to tomorrow
-        if let dayEndDate = calendar.date(byAdding: .day, value: 1, to: self.dayStartDate) {
+        if let dayEndDate = calendar.date(byAdding: .day, value: 1, to: anchorDate) {
             self.dayEndDate = dayEndDate
         }
         
         // get the week start date
-        var dateComponents = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self.dayStartDate)
+        var dateComponents = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: anchorDate)
         guard let firstDayOfWeek = calendar.date(from: dateComponents) else {
             return
         }
@@ -368,7 +374,7 @@ class HeartRateVC: UIViewController {
         }
                 
         // get the start date of month
-        dateComponents = calendar.dateComponents([.year, .month], from: self.dayStartDate)
+        dateComponents = calendar.dateComponents([.year, .month], from: anchorDate)
         guard let firstDayOfMonth = calendar.date(from: dateComponents) else {
             return
         }
@@ -378,7 +384,7 @@ class HeartRateVC: UIViewController {
         }
         
         // get the start day of year
-        dateComponents = calendar.dateComponents([.year], from: self.dayStartDate)
+        dateComponents = calendar.dateComponents([.year], from: anchorDate)
         guard let firstDayOfYear = calendar.date(from: dateComponents) else {
             return
         }
@@ -388,9 +394,42 @@ class HeartRateVC: UIViewController {
         }
     }
     
+    private func calculateHealthKitStartDate() -> (startDate:Date, endDate:Date) {
+        let calendar = Calendar.current
+        var startDate = Date()
+        let endDate = calendar.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+        switch self.selectedDataType {
+        case ChartDataViewType.Day:
+            startDate = calendar.date(byAdding: .day, value: -30, to: endDate)!
+        case ChartDataViewType.Week:
+            startDate = calendar.date(byAdding: .weekOfYear, value: -11, to: endDate)!
+            let dateComponents = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: startDate)
+            if let weekStartDate = calendar.date(from: dateComponents) {
+                startDate = weekStartDate
+            }
+        case ChartDataViewType.Month:
+            startDate = calendar.date(byAdding: .month, value: -11, to: endDate)!
+            let dateComponents = calendar.dateComponents([.year, .month], from: startDate)
+            if let monthStartDate = calendar.date(from: dateComponents) {
+                startDate = monthStartDate
+            }
+        case ChartDataViewType.Year:
+            startDate = calendar.date(byAdding: .year, value: -99, to: endDate)!
+            let dateComponents = calendar.dateComponents([.year], from: startDate)
+            if let yearStartDate = calendar.date(from: dateComponents) {
+                startDate = yearStartDate
+            }
+        }
+        
+        return (startDate, endDate)
+    }
+    
     private func getHeartRates() {
+        let result = self.calculateHealthKitStartDate()
+        let startDate = result.startDate
+        let endDate = result.endDate
         DispatchQueue.global(qos: .background).async {
-            HealthKitHelper.default.getHeartRates() {(heartRates, error) in
+            HealthKitHelper.default.getHeartRates(startDate: startDate, endDate: endDate) {(heartRates, error) in
                 if (error != nil) {
                     print(error!)
                 }
@@ -414,9 +453,12 @@ class HeartRateVC: UIViewController {
     }
     
     private func getECGData(){
+        let result = self.calculateHealthKitStartDate()
+        let startDate = result.startDate
+        let endDate = result.endDate
         DispatchQueue.global(qos: .background).async {
-            HealthKitHelper.default.getECG { (ecgData, error) in
-                
+            HealthKitHelper.default.getECG(startDate: startDate, endDate: endDate) { (ecgData, error) in
+
                 if (error != nil) {
                     print(error!)
                 }
@@ -715,21 +757,7 @@ class HeartRateVC: UIViewController {
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
         self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
-        HealthKitHelper.default.getECG { (ecgData, error) in
-            
-            if (error != nil) {
-                print(error!)
-            }
-            
-            guard let ecgData = ecgData else {
-                print("can't get ECG data")
-                return
-            }
-            self.processECGDataset(ecgData: ecgData)
-            DispatchQueue.main.async {
-                self.resetChartView()
-            }
-        }
+        self.refreshData()
     }
 
     @IBAction func onShareButtonPressed(_ sender: Any) {

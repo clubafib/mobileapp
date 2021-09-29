@@ -867,7 +867,7 @@ class HealthKitHelper {
         }
     }
 
-    func getHeartRates(completion: @escaping ([HeartRate]?, Error?) -> Swift.Void) {
+    func getHeartRates(startDate: Date, endDate: Date, completion: @escaping ([HeartRate]?, Error?) -> Swift.Void) {
         if m_bProcessingHR {
             completion(nil, nil)
             return
@@ -879,8 +879,8 @@ class HealthKitHelper {
         }
         
         // Create the query
-                        
-        let query = HKSampleQuery(sampleType: quantityType, predicate: nil, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, samples, error) in
+        let predicateByStartEndDate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [])
+        let query = HKSampleQuery(sampleType: quantityType, predicate: predicateByStartEndDate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, samples, error) in
             if let error = error {
                 completion(nil, error)
                 return
@@ -939,9 +939,19 @@ class HealthKitHelper {
 
     @available(iOS 14.0, *)
     func getECG(completion: @escaping ([Ecg]?, Error?) -> Swift.Void) {
+        let calendar = Calendar.current
+        let now = Date()
+        let startDate = calendar.date(byAdding: .year, value: -1, to: now)!
+        let endDate = now
+        getECG(startDate: startDate, endDate: endDate, completion: completion)
+    }
+    
+    @available(iOS 14.0, *)
+    func getECG(startDate: Date, endDate: Date, completion: @escaping ([Ecg]?, Error?) -> Swift.Void) {
         let ecgType = HKObjectType.electrocardiogramType()
+        let predicateByStartEndDate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [])
         let ecgQuery = HKSampleQuery(sampleType: ecgType,
-                                     predicate: nil,
+                                     predicate: predicateByStartEndDate,
                                      limit: HKObjectQueryNoLimit,
                                      sortDescriptors: nil) { (query, samples, error) in
             
