@@ -26,7 +26,7 @@ class HomeTabVC: UITabBarController {
 //        NotificationCenter.default.addObserver(self, selector: #selector(self.onProfileUpdated), name: NSNotification.Name(USER_NOTIFICATION_PROFILE_CHANGED), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.onMenuClicked(sender:)), name: NSNotification.Name(USER_NOTIFICATION_OPEN_MENU), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(self.onDataFeteched), name: NSNotification.Name(USER_NOTIFICATION_FECTED_DATA), object: nil)
-//        showLoadingProgress(view: self.navigationController?.view, label: "Please Stay Patient")
+        showLoadingProgress(view: self.navigationController?.view)
     }
     
     @objc func onDataFeteched(){
@@ -62,6 +62,8 @@ class HomeTabVC: UITabBarController {
             DispatchQueue.main.async {
                 if self.requireAutoLogin {
                     self.autoLogin()
+                } else {
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
                 }
             }    
         }
@@ -148,6 +150,7 @@ class HomeTabVC: UITabBarController {
                     let signinVC = AUTHENTICATION_STORYBOARD.instantiateViewController(withIdentifier: "SigninVC") as! SigninVC
                     self.navigationController?.pushViewController(signinVC, animated: true)
                 }
+                self.dismissLoadingProgress(view: self.navigationController?.view)
             }
         }
     }
