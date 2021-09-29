@@ -350,15 +350,15 @@ class HeartRateVC: UIViewController {
         let now = Date()
         
         // Set the anchor date to start of today
-        let anchorDate = calendar.startOfDay(for: now)
+        self.dayStartDate = calendar.startOfDay(for: now)
         
         // set the day end date to tomorrow
-        if let dayEndDate = calendar.date(byAdding: .day, value: 1, to: anchorDate) {
+        if let dayEndDate = calendar.date(byAdding: .day, value: 1, to: self.dayStartDate) {
             self.dayEndDate = dayEndDate
         }
         
         // get the week start date
-        var dateComponents = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: anchorDate)
+        var dateComponents = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self.dayStartDate)
         guard let firstDayOfWeek = calendar.date(from: dateComponents) else {
             return
         }
@@ -368,7 +368,7 @@ class HeartRateVC: UIViewController {
         }
                 
         // get the start date of month
-        dateComponents = calendar.dateComponents([.year, .month], from: anchorDate)
+        dateComponents = calendar.dateComponents([.year, .month], from: self.dayStartDate)
         guard let firstDayOfMonth = calendar.date(from: dateComponents) else {
             return
         }
@@ -378,7 +378,7 @@ class HeartRateVC: UIViewController {
         }
         
         // get the start day of year
-        dateComponents = calendar.dateComponents([.year], from: anchorDate)
+        dateComponents = calendar.dateComponents([.year], from: self.dayStartDate)
         guard let firstDayOfYear = calendar.date(from: dateComponents) else {
             return
         }
