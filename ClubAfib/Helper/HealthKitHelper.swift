@@ -955,42 +955,20 @@ class HealthKitHelper {
                 return
             }
             var ecgs = [Ecg]()
-//            let group = DispatchGroup()
             for sample in ecgSamples {
-                let ecg = Ecg()
-                if let val = sample.averageHeartRate {
-                    ecg.avgHeartRate = val.doubleValue(for: HKUnit(from: "count/min"))
-                }                
-                ecg.date = sample.endDate
-                ecg.type = sample.classification.rawValue
-                ecgs.append(ecg)                
-                
-//                group.enter()
-//                let query = HKElectrocardiogramQuery(sample) { (query, result) in
-//                    switch result {
-//                        case .error(let error):
-//                            print("error: ", error)
-//                            break
-//                        case .measurement(let value):
-//                            let ecgitem = EcgItem()
-//                            if let val = value.quantity(for: .appleWatchSimilarToLeadI) {
-//                                ecgitem.value = val.doubleValue(for: HKUnit(from: "mcV"))
-//                            }
-//
-//                            ecgitem.time = value.timeSinceSampleStart
-////                            ecg.voltages.append(ecgitem)
-//                        case .done:
-//                            group.leave()
-//                            break
-//                        default:
-//                            break
-//                    }
-//                }
-//                healthStore.execute(query)
+                // exclude low and high inconclusive data per Dr. Maria
+                if sample.classification != .inconclusiveLowHeartRate &&
+                    sample.classification != .inconclusiveHighHeartRate {
+                    let ecg = Ecg()
+                    if let val = sample.averageHeartRate {
+                        ecg.avgHeartRate = val.doubleValue(for: HKUnit(from: "count/min"))
+                    }
+                    ecg.date = sample.endDate
+                    ecg.type = sample.classification.rawValue
+                    ecgs.append(ecg)
+                }
             }
-//            group.notify(queue: .main) {
             completion(ecgs, nil)
-//            }
         }
         self.healthStore.execute(ecgQuery)
     }

@@ -42,7 +42,6 @@ class HeartRateVC: UIViewController {
     var yearEntries = [RangeBarChartDataEntry]()
     var ecgSREntries = [BarChartDataEntry]()
     var ecgAFEntries = [BarChartDataEntry]()
-    var ecgLHEntries = [BarChartDataEntry]()
     var ecgICCSEntries = [BarChartDataEntry]()
     
     var timer: Timer!
@@ -50,7 +49,6 @@ class HeartRateVC: UIViewController {
     var selectedDataType: ChartDataViewType = .Week    
     var ecgSR = [Ecg]()
     var ecgAF = [Ecg]()
-    var ecgLH = [Ecg]()
     var ecgICCS = [Ecg]()
     var chartHeight:CGFloat = 100
     var m_vwData = [UIView]()
@@ -80,7 +78,7 @@ class HeartRateVC: UIViewController {
         lblLegend.sizeToFit()
         heartRateChartView.addSubview(lblLegend)
         m_vwData.append(heartRateChartView)
-        for i in 0..<4 {
+        for i in 0..<3 {
             lblLegend = UILabel(frame: lblLegend.frame)
             lblLegend.font = UIFont.systemFont(ofSize: 12, weight: .medium)
             switch i {
@@ -91,10 +89,6 @@ class HeartRateVC: UIViewController {
             case 1:
                 lblLegend.text = "Atrial Fibrillation"
                 lblLegend.textColor = UIColor.red
-                break
-            case 2:
-                lblLegend.text = "Low And High Heart Rate"
-                lblLegend.textColor = UIColor.blue
                 break
             default:
                 lblLegend.text = "Inconclusive"
@@ -108,7 +102,7 @@ class HeartRateVC: UIViewController {
             ecgCharts.append(barChart)
             m_vwData.append(ecgCharts[i])
         }
-        tblData.frame.size = CGSize(width: scvwContent.frame.size.width, height: (chartHeight + 20) * 5)
+        tblData.frame.size = CGSize(width: scvwContent.frame.size.width, height: (chartHeight + 20) * 4)
         scvwContent.contentSize = CGSize(width: 0, height: tblData.frame.size.height + tblData.frame.origin.y)
         tblData.reloadData()
         
@@ -224,11 +218,9 @@ class HeartRateVC: UIViewController {
     private func processECGDataset(ecgData: [Ecg]) {
         ecgSREntries.removeAll()
         ecgAFEntries.removeAll()
-        ecgLHEntries.removeAll()
         ecgICCSEntries.removeAll()
         ecgSR.removeAll()
         ecgAF.removeAll()
-        ecgLH.removeAll()
         ecgICCS.removeAll()
         
         for item in ecgData {
@@ -240,10 +232,8 @@ class HeartRateVC: UIViewController {
                 ecgAF.append(item)
                 break
             case .inconclusiveHighHeartRate:
-                ecgLH.append(item)
                 break
             case .inconclusiveLowHeartRate:
-                ecgLH.append(item)
                 break
             case .inconclusiveOther:
                 ecgICCS.append(item)
@@ -258,8 +248,7 @@ class HeartRateVC: UIViewController {
         
         self.initEcgEntries(ecgSR, type:0)
         self.initEcgEntries(ecgAF, type:1)
-        self.initEcgEntries(ecgLH, type:2)
-        self.initEcgEntries(ecgICCS, type:3)
+        self.initEcgEntries(ecgICCS, type:2)
     }
     
     func initEcgEntries(_ ecgs:[Ecg], type:Int) {
@@ -318,9 +307,6 @@ class HeartRateVC: UIViewController {
         case 1:
             ecgAFEntries.append(entry)
             break
-        case 2:
-            ecgLHEntries.append(entry)
-            break;
         default:
             ecgICCSEntries.append(entry)
             break
@@ -657,9 +643,6 @@ class HeartRateVC: UIViewController {
                         dataSet.replaceEntries(ecgAFEntries)
                         break
                     case 3:
-                        dataSet.replaceEntries(ecgLHEntries)
-                        break
-                    case 4:
                         dataSet.replaceEntries(ecgICCSEntries)
                         break
                     default:
@@ -678,10 +661,6 @@ class HeartRateVC: UIViewController {
                     dataSet.colors = [UIColor.red]
                     break
                 case 3:
-                    dataSet = BarChartDataSet(entries: ecgLHEntries, label: "")
-                    dataSet.colors = [UIColor.blue]
-                    break
-                case 4:
                     dataSet = BarChartDataSet(entries: ecgICCSEntries, label: "")
                     dataSet.colors = [UIColor.orange]
                     break
@@ -791,9 +770,6 @@ extension HeartRateVC: ChartViewDelegate {
                     break
                 case 2:
                     vc.ecgData = ecgAF
-                    break
-                case 3:
-                    vc.ecgData = ecgLH
                     break
                 default:
                     vc.ecgData = ecgICCS
