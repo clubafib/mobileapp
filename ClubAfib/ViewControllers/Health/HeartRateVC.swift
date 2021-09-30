@@ -56,8 +56,7 @@ class HeartRateVC: UIViewController {
     var dataLoads = 0
     var previousHeartRatesQueryStartDate:Date?
     var previousHeartRatesQueryEndDate:Date?
-    var previousECGQueryStartDate:Date?
-    var previousECGQueryEndDate:Date?
+    var lastHighlightedDate:Date?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -462,28 +461,20 @@ class HeartRateVC: UIViewController {
         let result = self.calculateHealthKitStartDate()
         let startDate = result.startDate
         let endDate = result.endDate
-        if (previousECGQueryStartDate != nil && previousECGQueryEndDate != nil) &&
-            startDate >= previousECGQueryStartDate! &&
-            endDate <= previousECGQueryEndDate! {
-            self.resetChartView()
-        } else {
-            DispatchQueue.global(qos: .background).async {
-                HealthKitHelper.default.getECG(startDate: startDate, endDate: endDate) { (ecgData, error) in
-                    
-                    if (error != nil) {
-                        print(error!)
-                    }
-                    
-                    guard let ecgData = ecgData else {
-                        print("can't get ECG data")
-                        self.dismissLoadingProgress(view: self.navigationController?.view)
-                        return
-                    }
-                    self.previousECGQueryStartDate = startDate
-                    self.previousECGQueryEndDate = endDate
-                    self.processECGDataset(ecgData: ecgData)
-                    self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getECG(startDate: startDate, endDate: endDate) { (ecgData, error) in
+                
+                if (error != nil) {
+                    print(error!)
                 }
+                
+                guard let ecgData = ecgData else {
+                    print("can't get ECG data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    return
+                }
+                self.processECGDataset(ecgData: ecgData)
+                self.resetChartView()
             }
         }
     }
@@ -737,26 +728,30 @@ class HeartRateVC: UIViewController {
                 (chart.marker as! EcgMarker).currentXAxisType = selectedDataType
             }
             
+            var x:Double
             switch selectedDataType {
             case .Day:
                 heartRateChartView.setVisibleXRange(minXRange: 24, maxXRange: 24) //24
                 heartRateChartView.rangeBarData?.barWidth = 0.7
+                x = positionChart(maxX: maxX, entries: dayEntries, chartType: .Day)
                 break
             case .Week:
                 heartRateChartView.setVisibleXRange(minXRange: 7, maxXRange: 7)
                 heartRateChartView.rangeBarData?.barWidth = 0.2
+                x = positionChart(maxX: maxX, entries: weekEntries, chartType: .Week)
                 break
             case .Month:
                 heartRateChartView.setVisibleXRange(minXRange: 30, maxXRange: 30) // 30
                 heartRateChartView.rangeBarData?.barWidth = 0.7
+                x = positionChart(maxX: maxX, entries: monthEntries, chartType: .Month)
                 break
             default:
                 heartRateChartView.setVisibleXRange(minXRange: 12, maxXRange: 12)
                 heartRateChartView.rangeBarData?.barWidth = 0.5
+                x = positionChart(maxX: maxX, entries: yearEntries, chartType: .Year)
                 break
             }
-            
-            heartRateChartView.moveViewToX(maxX)
+            heartRateChartView.moveViewToX(x)
             
             for chart in ecgCharts {
                 (chart.xAxis.valueFormatter as! DayAxisValueFormatter).currentXAxisType = selectedDataType
@@ -764,7 +759,7 @@ class HeartRateVC: UIViewController {
                 chart.xAxis.axisMaxLabels = heartRateChartView.xAxis.axisMaxLabels
                 chart.xAxis.axisMinLabels = heartRateChartView.xAxis.axisMinLabels
                 chart.barData?.barWidth = heartRateChartView.rangeBarData!.barWidth
-                chart.moveViewToX(maxX)
+                chart.moveViewToX(x)
             }
             updateMeasurements()
         }
@@ -777,7 +772,37 @@ class HeartRateVC: UIViewController {
 
     @IBAction func onShareButtonPressed(_ sender: Any) {
         shareScreenshot()
-    }    
+    }
+
+    private func positionChart(maxX:Double, entries:[RangeBarChartDataEntry], chartType:ChartDataViewType) -> (Double) {
+        if lastHighlightedDate != nil {
+            var startDateIndex:Int? = nil
+            var endDateIndex:Int? = nil
+            for entry in entries {
+                let date = GetDateFromChartEntryX(value: entry.x, type: chartType)
+                if date >= lastHighlightedDate! {
+                    startDateIndex = entries.index(of: entry)
+                    break
+                }
+            }
+            for entry in entries.reversed() {
+                let date = GetDateFromChartEntryX(value: entry.x, type: chartType)
+                if date <= lastHighlightedDate! {
+                    endDateIndex = entries.index(of: entry)
+                    break
+                }
+            }
+            if (startDateIndex != nil && endDateIndex != nil) {
+                let index = ((endDateIndex! - startDateIndex!) / 2) + startDateIndex!
+                let x = entries[index].x
+                return x
+            } else {
+                return maxX
+            }
+        } else {
+            return maxX
+        }
+    }
 }
 
 extension HeartRateVC: ChartViewDelegate {
@@ -787,12 +812,14 @@ extension HeartRateVC: ChartViewDelegate {
             for tempChart in ecgCharts {
                 if tempChart != chartView {
                     tempChart.highlightValue(highlight)
+                    self.lastHighlightedDate = GetDateFromChartEntryX(value: highlight.x, type: self.selectedDataType)
                 }
             }
         } else {
             for tempChart in ecgCharts {
                 if tempChart != chartView {
                     tempChart.highlightValue(highlight)
+                    self.lastHighlightedDate = GetDateFromChartEntryX(value: highlight.x, type: self.selectedDataType)
                 }
             }
             heartRateChartView.highlightValue(highlight)
@@ -801,6 +828,7 @@ extension HeartRateVC: ChartViewDelegate {
     
     func chartValueNothingSelected(_ chartView: ChartViewBase) {
         if chartView == heartRateChartView {
+            self.lastHighlightedDate = nil
             return
         }
         if let lastEntry = chartView.lastActivated {
