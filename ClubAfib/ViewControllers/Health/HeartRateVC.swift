@@ -54,6 +54,10 @@ class HeartRateVC: UIViewController {
     var m_vwData = [UIView]()
     
     var dataLoads = 0
+    var previousHeartRatesQueryStartDate:Date?
+    var previousHeartRatesQueryEndDate:Date?
+    var previousECGQueryStartDate:Date?
+    var previousECGQueryEndDate:Date?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -424,8 +428,6 @@ class HeartRateVC: UIViewController {
         return (startDate, endDate)
     }
     
-    var previousHeartRatesQueryStartDate:Date?
-    var previousHeartRatesQueryEndDate:Date?
     private func getHeartRates() {
         let result = self.calculateHealthKitStartDate()
         let startDate = result.startDate
@@ -433,35 +435,24 @@ class HeartRateVC: UIViewController {
         if (previousHeartRatesQueryStartDate != nil && previousHeartRatesQueryEndDate != nil) &&
             startDate >= previousHeartRatesQueryStartDate! &&
             endDate <= previousHeartRatesQueryEndDate! {
-            DispatchQueue.main.async {
-                self.dataLoads = self.dataLoads - 1
-                if (self.dataLoads == 0) {
-                    self.dismissLoadingProgress(view: self.navigationController?.view)
+            self.resetChartView()
+        } else {
+            DispatchQueue.global(qos: .background).async {
+                HealthKitHelper.default.getHeartRates(startDate: startDate, endDate: endDate) {(heartRates, error) in
+                    if (error != nil) {
+                        print(error!)
+                    }
+                    guard let heartRates = heartRates else {
+                        print("can't get heart rate data")
+                        DispatchQueue.main.async {
+                            self.dismissLoadingProgress(view: self.navigationController?.view)
+                        }
+                        return
+                    }
+                    self.previousHeartRatesQueryStartDate = startDate
+                    self.previousHeartRatesQueryEndDate = endDate
+                    self.processDataset(heartRates: heartRates)
                     self.resetChartView()
-                }
-            }
-        }
-        DispatchQueue.global(qos: .background).async {
-            HealthKitHelper.default.getHeartRates(startDate: startDate, endDate: endDate) {(heartRates, error) in
-                if (error != nil) {
-                    print(error!)
-                }
-                guard let heartRates = heartRates else {
-                    print("can't get heart rate data")
-                    DispatchQueue.main.async {
-                        self.dismissLoadingProgress(view: self.navigationController?.view)
-                    }
-                    return
-                }
-                self.previousHeartRatesQueryStartDate = startDate
-                self.previousHeartRatesQueryEndDate = endDate
-                self.processDataset(heartRates: heartRates)
-                DispatchQueue.main.async {
-                    self.dataLoads = self.dataLoads - 1
-                    if (self.dataLoads == 0) {
-                        self.dismissLoadingProgress(view: self.navigationController?.view)
-                        self.resetChartView()
-                    }
                 }
             }
         }
@@ -471,25 +462,27 @@ class HeartRateVC: UIViewController {
         let result = self.calculateHealthKitStartDate()
         let startDate = result.startDate
         let endDate = result.endDate
-        DispatchQueue.global(qos: .background).async {
-            HealthKitHelper.default.getECG(startDate: startDate, endDate: endDate) { (ecgData, error) in
-
-                if (error != nil) {
-                    print(error!)
-                }
-                
-                guard let ecgData = ecgData else {
-                    print("can't get ECG data")
-                    self.dismissLoadingProgress(view: self.navigationController?.view)
-                    return
-                }
-                self.processECGDataset(ecgData: ecgData)
-                DispatchQueue.main.async {
-                    self.dataLoads = self.dataLoads - 1
-                    if (self.dataLoads == 0) {
-                        self.dismissLoadingProgress(view: self.navigationController?.view)
-                        self.resetChartView()
+        if (previousECGQueryStartDate != nil && previousECGQueryEndDate != nil) &&
+            startDate >= previousECGQueryStartDate! &&
+            endDate <= previousECGQueryEndDate! {
+            self.resetChartView()
+        } else {
+            DispatchQueue.global(qos: .background).async {
+                HealthKitHelper.default.getECG(startDate: startDate, endDate: endDate) { (ecgData, error) in
+                    
+                    if (error != nil) {
+                        print(error!)
                     }
+                    
+                    guard let ecgData = ecgData else {
+                        print("can't get ECG data")
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        return
+                    }
+                    self.previousECGQueryStartDate = startDate
+                    self.previousECGQueryEndDate = endDate
+                    self.processECGDataset(ecgData: ecgData)
+                    self.resetChartView()
                 }
             }
         }
@@ -637,137 +630,144 @@ class HeartRateVC: UIViewController {
     }
     
     private func resetChartView() {
-        (heartRateChartView.xAxis.valueFormatter as! DayAxisValueFormatter).currentXAxisType = selectedDataType
-        (heartRateChartView.marker as! HeartRateMarkerView).currentXAxisType = selectedDataType
-        
-        var minX = 0.0, maxX = 0.0
-        var entries: [RangeBarChartDataEntry]
-        switch selectedDataType {
-        case .Day:
-            entries = dayEntries
-            minX = GetXValueFromDate(date: dayStartDate, type: selectedDataType)
-            maxX = GetXValueFromDate(date: dayEndDate, type: selectedDataType)
-            break
-        case .Week:
-            entries = weekEntries
-            minX = GetXValueFromDate(date: weekStartDate, type: .Week)
-            maxX = GetXValueFromDate(date: weekEndDate, type: .Week)
-            break
-        case .Month:
-            entries = monthEntries
-            minX = GetXValueFromDate(date: monthStartDate, type: .Month)
-            maxX = GetXValueFromDate(date: monthEndDate, type: .Month)
-            break
-        default:
-            entries = yearEntries
-            minX = GetXValueFromDate(date: yearStartDate, type: .Year)
-            maxX = GetXValueFromDate(date: yearEndDate, type: .Year)
-            break
-        }
-        if entries.count == 0 {
+        self.dataLoads = self.dataLoads - 1
+        if (self.dataLoads > 0) {
             return
         }
-        for chart in ecgCharts {
-            chart.xAxis.axisMinimum = minX
-            chart.xAxis.axisMaximum = maxX
-        }
-        heartRateChartView.xAxis.axisMinimum = minX
-        heartRateChartView.xAxis.axisMaximum = maxX
-        
-        if let hrSet = heartRateChartView.rangeBarData?.dataSets.first as? RangeBarChartDataSet {
-            hrSet.replaceEntries(entries)
-            heartRateChartView.data?.notifyDataChanged()
-        } else {
-            let hrSet = RangeBarChartDataSet(entries: entries, label: "")
-            hrSet.colors = [UIColor.systemPink]
-            hrSet.drawValuesEnabled = false
-            let hrData = RangeBarChartData(dataSet: hrSet)
-            hrData.setValueFont(UIFont(name: "HelveticaNeue-Light", size: 10)!)
-            if entries.count > 0 {
-                heartRateChartView.data = hrData
+        DispatchQueue.main.async { [self] in
+            self.dismissLoadingProgress(view: self.navigationController?.view)
+            (heartRateChartView.xAxis.valueFormatter as! DayAxisValueFormatter).currentXAxisType = selectedDataType
+            (heartRateChartView.marker as! HeartRateMarkerView).currentXAxisType = selectedDataType
+            
+            var minX = 0.0, maxX = 0.0
+            var entries: [RangeBarChartDataEntry]
+            switch selectedDataType {
+            case .Day:
+                entries = dayEntries
+                minX = GetXValueFromDate(date: dayStartDate, type: selectedDataType)
+                maxX = GetXValueFromDate(date: dayEndDate, type: selectedDataType)
+                break
+            case .Week:
+                entries = weekEntries
+                minX = GetXValueFromDate(date: weekStartDate, type: .Week)
+                maxX = GetXValueFromDate(date: weekEndDate, type: .Week)
+                break
+            case .Month:
+                entries = monthEntries
+                minX = GetXValueFromDate(date: monthStartDate, type: .Month)
+                maxX = GetXValueFromDate(date: monthEndDate, type: .Month)
+                break
+            default:
+                entries = yearEntries
+                minX = GetXValueFromDate(date: yearStartDate, type: .Year)
+                maxX = GetXValueFromDate(date: yearEndDate, type: .Year)
+                break
             }
-        }
-        heartRateChartView.notifyDataSetChanged()
-        
-        for chart in ecgCharts {
-            if chart.barData != nil {
-                if let dataSet = chart.barData!.dataSets.first as? BarChartDataSet {
+            if entries.count == 0 {
+                return
+            }
+            for chart in ecgCharts {
+                chart.xAxis.axisMinimum = minX
+                chart.xAxis.axisMaximum = maxX
+            }
+            heartRateChartView.xAxis.axisMinimum = minX
+            heartRateChartView.xAxis.axisMaximum = maxX
+            
+            if let hrSet = heartRateChartView.rangeBarData?.dataSets.first as? RangeBarChartDataSet {
+                hrSet.replaceEntries(entries)
+                heartRateChartView.data?.notifyDataChanged()
+            } else {
+                let hrSet = RangeBarChartDataSet(entries: entries, label: "")
+                hrSet.colors = [UIColor.systemPink]
+                hrSet.drawValuesEnabled = false
+                let hrData = RangeBarChartData(dataSet: hrSet)
+                hrData.setValueFont(UIFont(name: "HelveticaNeue-Light", size: 10)!)
+                if entries.count > 0 {
+                    heartRateChartView.data = hrData
+                }
+            }
+            heartRateChartView.notifyDataSetChanged()
+            
+            for chart in ecgCharts {
+                if chart.barData != nil {
+                    if let dataSet = chart.barData!.dataSets.first as? BarChartDataSet {
+                        switch chart.tag {
+                        case 1:
+                            dataSet.replaceEntries(ecgSREntries)
+                            break
+                        case 2:
+                            dataSet.replaceEntries(ecgAFEntries)
+                            break
+                        case 3:
+                            dataSet.replaceEntries(ecgICCSEntries)
+                            break
+                        default:
+                            break
+                        }
+                        chart.data!.notifyDataChanged()
+                    }
+                } else {
+                    var dataSet = BarChartDataSet(entries: ecgSREntries, label: "")
                     switch chart.tag {
                     case 1:
-                        dataSet.replaceEntries(ecgSREntries)
+                        dataSet.colors = [UIColor.systemGreen]
                         break
                     case 2:
-                        dataSet.replaceEntries(ecgAFEntries)
+                        dataSet = BarChartDataSet(entries: ecgAFEntries, label: "")
+                        dataSet.colors = [UIColor.red]
                         break
                     case 3:
-                        dataSet.replaceEntries(ecgICCSEntries)
+                        dataSet = BarChartDataSet(entries: ecgICCSEntries, label: "")
+                        dataSet.colors = [UIColor.orange]
                         break
                     default:
                         break
                     }
-                    chart.data!.notifyDataChanged()
+                    dataSet.drawValuesEnabled = false
+                    let data = BarChartData(dataSet: dataSet)
+                    data.setValueFont(UIFont(name: "HelveticaNeue-Light", size: 10)!)
+                    if dataSet.count > 0 {
+                        chart.data = data
+                    }
                 }
-            } else {
-                var dataSet = BarChartDataSet(entries: ecgSREntries, label: "")
-                switch chart.tag {
-                case 1:
-                    dataSet.colors = [UIColor.systemGreen]
-                    break
-                case 2:
-                    dataSet = BarChartDataSet(entries: ecgAFEntries, label: "")
-                    dataSet.colors = [UIColor.red]
-                    break
-                case 3:
-                    dataSet = BarChartDataSet(entries: ecgICCSEntries, label: "")
-                    dataSet.colors = [UIColor.orange]
-                    break
-                default:
-                    break
+                if let chartData = chart.data{
+                    chartData.notifyDataChanged()
                 }
-                dataSet.drawValuesEnabled = false
-                let data = BarChartData(dataSet: dataSet)
-                data.setValueFont(UIFont(name: "HelveticaNeue-Light", size: 10)!)
-                if dataSet.count > 0 {
-                    chart.data = data
-                }
+                chart.notifyDataSetChanged()
+                (chart.marker as! EcgMarker).currentXAxisType = selectedDataType
             }
-            if let chartData = chart.data{
-                chartData.notifyDataChanged()
+            
+            switch selectedDataType {
+            case .Day:
+                heartRateChartView.setVisibleXRange(minXRange: 24, maxXRange: 24) //24
+                heartRateChartView.rangeBarData?.barWidth = 0.7
+                break
+            case .Week:
+                heartRateChartView.setVisibleXRange(minXRange: 7, maxXRange: 7)
+                heartRateChartView.rangeBarData?.barWidth = 0.2
+                break
+            case .Month:
+                heartRateChartView.setVisibleXRange(minXRange: 30, maxXRange: 30) // 30
+                heartRateChartView.rangeBarData?.barWidth = 0.7
+                break
+            default:
+                heartRateChartView.setVisibleXRange(minXRange: 12, maxXRange: 12)
+                heartRateChartView.rangeBarData?.barWidth = 0.5
+                break
             }
-            chart.notifyDataSetChanged()
-            (chart.marker as! EcgMarker).currentXAxisType = selectedDataType
+            
+            heartRateChartView.moveViewToX(maxX)
+            
+            for chart in ecgCharts {
+                (chart.xAxis.valueFormatter as! DayAxisValueFormatter).currentXAxisType = selectedDataType
+                chart.setVisibleXRange(minXRange: heartRateChartView.visibleXRange, maxXRange: heartRateChartView.visibleXRange)
+                chart.xAxis.axisMaxLabels = heartRateChartView.xAxis.axisMaxLabels
+                chart.xAxis.axisMinLabels = heartRateChartView.xAxis.axisMinLabels
+                chart.barData?.barWidth = heartRateChartView.rangeBarData!.barWidth
+                chart.moveViewToX(maxX)
+            }
+            updateMeasurements()
         }
-                
-        switch selectedDataType {
-        case .Day:
-            heartRateChartView.setVisibleXRange(minXRange: 24, maxXRange: 24) //24
-            heartRateChartView.rangeBarData?.barWidth = 0.7
-            break
-        case .Week:
-            heartRateChartView.setVisibleXRange(minXRange: 7, maxXRange: 7)
-            heartRateChartView.rangeBarData?.barWidth = 0.2
-            break
-        case .Month:
-            heartRateChartView.setVisibleXRange(minXRange: 30, maxXRange: 30) // 30
-            heartRateChartView.rangeBarData?.barWidth = 0.7
-            break
-        default:
-            heartRateChartView.setVisibleXRange(minXRange: 12, maxXRange: 12)
-            heartRateChartView.rangeBarData?.barWidth = 0.5
-            break
-        }
-        
-        heartRateChartView.moveViewToX(maxX)
-        
-        for chart in ecgCharts {
-            (chart.xAxis.valueFormatter as! DayAxisValueFormatter).currentXAxisType = selectedDataType
-            chart.setVisibleXRange(minXRange: heartRateChartView.visibleXRange, maxXRange: heartRateChartView.visibleXRange)
-            chart.xAxis.axisMaxLabels = heartRateChartView.xAxis.axisMaxLabels
-            chart.xAxis.axisMinLabels = heartRateChartView.xAxis.axisMinLabels
-            chart.barData?.barWidth = heartRateChartView.rangeBarData!.barWidth
-            chart.moveViewToX(maxX)
-        }
-        updateMeasurements()
     }
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
