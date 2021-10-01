@@ -35,6 +35,13 @@ class HeartRateVC: UIViewController {
     var monthEndDate = Date()
     var yearStartDate = Date()
     var yearEndDate = Date()
+    
+    var heartRateHKData = [HeartRate]()
+    var heartRateHKDataStartDate:Date?
+    var heartRateHKDataEndDate:Date?
+    var ecgHKData = [Ecg]()
+    var ecgHKDataStartDate:Date?
+    var ecgHKDataEndDate:Date?
 
     var dayEntries = [RangeBarChartDataEntry]()
     var weekEntries = [RangeBarChartDataEntry]()
@@ -54,8 +61,6 @@ class HeartRateVC: UIViewController {
     var m_vwData = [UIView]()
     
     var dataLoads = 0
-    var previousHeartRatesQueryStartDate:Date?
-    var previousHeartRatesQueryEndDate:Date?
     var lastHighlightedDate:Date?
 
     override func viewDidLoad() {
@@ -431,9 +436,11 @@ class HeartRateVC: UIViewController {
         let result = self.calculateHealthKitStartDate()
         let startDate = result.startDate
         let endDate = result.endDate
-        if (previousHeartRatesQueryStartDate != nil && previousHeartRatesQueryEndDate != nil) &&
-            startDate >= previousHeartRatesQueryStartDate! &&
-            endDate <= previousHeartRatesQueryEndDate! {
+        if (heartRateHKDataStartDate != nil && heartRateHKDataEndDate != nil) &&
+            startDate >= heartRateHKDataStartDate! &&
+            endDate <= heartRateHKDataEndDate! {
+            let heartRates = self.heartRateHKData
+            self.processDataset(heartRates: heartRates)
             self.resetChartView()
         } else {
             DispatchQueue.global(qos: .background).async {
@@ -448,8 +455,9 @@ class HeartRateVC: UIViewController {
                         }
                         return
                     }
-                    self.previousHeartRatesQueryStartDate = startDate
-                    self.previousHeartRatesQueryEndDate = endDate
+                    self.heartRateHKData = heartRates
+                    self.heartRateHKDataStartDate = startDate
+                    self.heartRateHKDataEndDate = endDate
                     self.processDataset(heartRates: heartRates)
                     self.resetChartView()
                 }
@@ -461,20 +469,31 @@ class HeartRateVC: UIViewController {
         let result = self.calculateHealthKitStartDate()
         let startDate = result.startDate
         let endDate = result.endDate
-        DispatchQueue.global(qos: .background).async {
-            HealthKitHelper.default.getECG(startDate: startDate, endDate: endDate) { (ecgData, error) in
-                
-                if (error != nil) {
-                    print(error!)
+        if (ecgHKDataStartDate != nil && ecgHKDataEndDate != nil) &&
+            startDate >= ecgHKDataStartDate! &&
+            endDate <= ecgHKDataEndDate! {
+            let ecgData = self.ecgHKData
+            self.processECGDataset(ecgData: ecgData)
+            self.resetChartView()
+        } else {
+            DispatchQueue.global(qos: .background).async {
+                HealthKitHelper.default.getECG(startDate: startDate, endDate: endDate) { (ecgData, error) in
+                    
+                    if (error != nil) {
+                        print(error!)
+                    }
+                    
+                    guard let ecgData = ecgData else {
+                        print("can't get ECG data")
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        return
+                    }
+                    self.ecgHKData = ecgData
+                    self.ecgHKDataStartDate = startDate
+                    self.ecgHKDataEndDate = endDate
+                    self.processECGDataset(ecgData: ecgData)
+                    self.resetChartView()
                 }
-                
-                guard let ecgData = ecgData else {
-                    print("can't get ECG data")
-                    self.dismissLoadingProgress(view: self.navigationController?.view)
-                    return
-                }
-                self.processECGDataset(ecgData: ecgData)
-                self.resetChartView()
             }
         }
     }
