@@ -433,17 +433,19 @@ class HeartRateVC: UIViewController {
     }
     
     private func getHeartRates() {
-        let result = self.calculateHealthKitStartDate()
-        let startDate = result.startDate
-        let endDate = result.endDate
-        if (heartRateHKDataStartDate != nil && heartRateHKDataEndDate != nil) &&
-            startDate >= heartRateHKDataStartDate! &&
-            endDate <= heartRateHKDataEndDate! {
-            let heartRates = self.heartRateHKData
-            self.processDataset(heartRates: heartRates)
-            self.resetChartView()
-        } else {
-            DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .background).async {
+            let result = self.calculateHealthKitStartDate()
+            let startDate = result.startDate
+            let endDate = result.endDate
+            if (self.heartRateHKDataStartDate != nil && self.heartRateHKDataEndDate != nil) &&
+                startDate >= self.heartRateHKDataStartDate! &&
+                endDate <= self.heartRateHKDataEndDate! {
+                let heartRates = self.heartRateHKData
+                self.processDataset(heartRates: heartRates)
+                DispatchQueue.main.async {
+                    self.resetChartView()
+                }
+            } else {
                 HealthKitHelper.default.getHeartRates(startDate: startDate, endDate: endDate) {(heartRates, error) in
                     if (error != nil) {
                         print(error!)
@@ -459,24 +461,28 @@ class HeartRateVC: UIViewController {
                     self.heartRateHKDataStartDate = startDate
                     self.heartRateHKDataEndDate = endDate
                     self.processDataset(heartRates: heartRates)
-                    self.resetChartView()
+                    DispatchQueue.main.async {
+                        self.resetChartView()
+                    }
                 }
             }
         }
     }
     
     private func getECGData(){
-        let result = self.calculateHealthKitStartDate()
-        let startDate = result.startDate
-        let endDate = result.endDate
-        if (ecgHKDataStartDate != nil && ecgHKDataEndDate != nil) &&
-            startDate >= ecgHKDataStartDate! &&
-            endDate <= ecgHKDataEndDate! {
-            let ecgData = self.ecgHKData
-            self.processECGDataset(ecgData: ecgData)
-            self.resetChartView()
-        } else {
-            DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .background).async {
+            let result = self.calculateHealthKitStartDate()
+            let startDate = result.startDate
+            let endDate = result.endDate
+            if (self.ecgHKDataStartDate != nil && self.ecgHKDataEndDate != nil) &&
+                startDate >= self.ecgHKDataStartDate! &&
+                endDate <= self.ecgHKDataEndDate! {
+                let ecgData = self.ecgHKData
+                self.processECGDataset(ecgData: ecgData)
+                DispatchQueue.main.async {
+                    self.resetChartView()
+                }
+            } else {
                 HealthKitHelper.default.getECG(startDate: startDate, endDate: endDate) { (ecgData, error) in
                     
                     if (error != nil) {
@@ -492,11 +498,14 @@ class HeartRateVC: UIViewController {
                     self.ecgHKDataStartDate = startDate
                     self.ecgHKDataEndDate = endDate
                     self.processECGDataset(ecgData: ecgData)
-                    self.resetChartView()
+                    DispatchQueue.main.async {
+                        self.resetChartView()
+                    }
                 }
             }
         }
     }
+    
     
     func resetStartDate(){
         let calendar = Calendar.current
@@ -645,7 +654,6 @@ class HeartRateVC: UIViewController {
             return
         }
         DispatchQueue.main.async { [self] in
-            self.dismissLoadingProgress(view: self.navigationController?.view)
             (heartRateChartView.xAxis.valueFormatter as! DayAxisValueFormatter).currentXAxisType = selectedDataType
             (heartRateChartView.marker as! HeartRateMarkerView).currentXAxisType = selectedDataType
             
@@ -781,6 +789,7 @@ class HeartRateVC: UIViewController {
                 chart.moveViewToX(x)
             }
             updateMeasurements()
+            self.dismissLoadingProgress(view: self.navigationController?.view)
         }
     }
     
