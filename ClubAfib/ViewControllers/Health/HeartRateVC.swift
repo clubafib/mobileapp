@@ -36,7 +36,6 @@ class HeartRateVC: UIViewController {
     var yearStartDate = Date()
     var yearEndDate = Date()
     
-    var heartRateHKData = [HeartRate]()
     var heartRateHKDataStartDate:Date?
     var heartRateHKDataEndDate:Date?
     var ecgHKData = [Ecg]()
@@ -443,8 +442,6 @@ class HeartRateVC: UIViewController {
             if (!forceRefresh && self.heartRateHKDataStartDate != nil && self.heartRateHKDataEndDate != nil) &&
                 startDate >= self.heartRateHKDataStartDate! &&
                 endDate <= self.heartRateHKDataEndDate! {
-                let heartRates = self.heartRateHKData
-                self.processDataset(heartRates: heartRates)
                 DispatchQueue.main.async {
                     self.resetChartView()
                 }
@@ -460,7 +457,6 @@ class HeartRateVC: UIViewController {
                         }
                         return
                     }
-                    self.heartRateHKData = heartRates
                     self.heartRateHKDataStartDate = startDate
                     self.heartRateHKDataEndDate = endDate
                     self.processDataset(heartRates: heartRates)
@@ -508,7 +504,6 @@ class HeartRateVC: UIViewController {
             }
         }
     }
-    
     
     func resetStartDate(){
         let calendar = Calendar.current
