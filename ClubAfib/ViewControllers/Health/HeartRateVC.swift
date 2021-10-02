@@ -114,20 +114,23 @@ class HeartRateVC: UIViewController {
         scvwContent.contentSize = CGSize(width: 0, height: tblData.frame.size.height + tblData.frame.origin.y)
         tblData.reloadData()
         
-        fetchData()
+        scvwContent.refreshControl = UIRefreshControl()
+        scvwContent.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
+        
+        fetchData(forceRefresh: true)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
     
-    private func fetchData() {
+    private func fetchData(forceRefresh:Bool = false) {
         self.showLoadingProgress(view: self.navigationController?.view)
         self.dataLoads = 2
         
         initChartView()
         initEcgCharts()
         initDates()
-        getHeartRates()
-        getECGData()
+        getHeartRates(forceRefresh: forceRefresh)
+        getECGData(forceRefresh: forceRefresh)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
@@ -354,7 +357,7 @@ class HeartRateVC: UIViewController {
     
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
-            self.fetchData()
+            self.fetchData(forceRefresh: true)
         }
     }
     
@@ -432,12 +435,12 @@ class HeartRateVC: UIViewController {
         return (startDate, endDate)
     }
     
-    private func getHeartRates() {
+    private func getHeartRates(forceRefresh:Bool = false) {
         DispatchQueue.global(qos: .background).async {
             let result = self.calculateHealthKitStartDate()
             let startDate = result.startDate
             let endDate = result.endDate
-            if (self.heartRateHKDataStartDate != nil && self.heartRateHKDataEndDate != nil) &&
+            if (!forceRefresh && self.heartRateHKDataStartDate != nil && self.heartRateHKDataEndDate != nil) &&
                 startDate >= self.heartRateHKDataStartDate! &&
                 endDate <= self.heartRateHKDataEndDate! {
                 let heartRates = self.heartRateHKData
@@ -469,12 +472,12 @@ class HeartRateVC: UIViewController {
         }
     }
     
-    private func getECGData(){
+    private func getECGData(forceRefresh:Bool = false) {
         DispatchQueue.global(qos: .background).async {
             let result = self.calculateHealthKitStartDate()
             let startDate = result.startDate
             let endDate = result.endDate
-            if (self.ecgHKDataStartDate != nil && self.ecgHKDataEndDate != nil) &&
+            if (!forceRefresh && self.ecgHKDataStartDate != nil && self.ecgHKDataEndDate != nil) &&
                 startDate >= self.ecgHKDataStartDate! &&
                 endDate <= self.ecgHKDataEndDate! {
                 let ecgData = self.ecgHKData
@@ -996,6 +999,11 @@ extension HeartRateVC: ChartViewDelegate {
             lblDate.text = ""
         }
         tblData.reloadData()
+    }
+    
+    @objc func handleRefreshControl() {
+        fetchData(forceRefresh: true)
+        self.scvwContent.refreshControl?.endRefreshing()        
     }
 }
 
