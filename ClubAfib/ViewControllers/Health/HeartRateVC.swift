@@ -116,6 +116,10 @@ class HeartRateVC: UIViewController {
         scvwContent.refreshControl = UIRefreshControl()
         scvwContent.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
         
+        initChartView()
+        initEcgCharts()
+        initDates()
+
         fetchData(forceRefresh: true)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
@@ -125,9 +129,6 @@ class HeartRateVC: UIViewController {
         self.showLoadingProgress(view: self.navigationController?.view)
         self.dataLoads = 2
         
-        initChartView()
-        initEcgCharts()
-        initDates()
         getHeartRates(forceRefresh: forceRefresh)
         getECGData(forceRefresh: forceRefresh)
         
