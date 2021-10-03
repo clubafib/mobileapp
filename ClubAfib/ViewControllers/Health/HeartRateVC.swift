@@ -936,7 +936,14 @@ extension HeartRateVC: ChartViewDelegate {
             
             switch selectedDataType {
             case .Day:
-                formatter.dateTemplate = "MMM d, h a"
+                let currentYear = Calendar.current.component(.year, from: Date())
+                let startYear = Calendar.current.component(.year, from: startDate)
+                let endYear = Calendar.current.component(.year, from: endDate)
+                if (currentYear == startYear && currentYear == endYear) {
+                    formatter.dateTemplate = "MMM d, h a"
+                } else {
+                    formatter.dateTemplate = "MMM d, h a, yyyy"
+                }
                 break
             case .Week:
                 formatter.dateTemplate = "MMM d, yyyy"

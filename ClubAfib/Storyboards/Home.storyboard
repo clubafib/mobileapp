@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rzz-vh-YqE">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rzz-vh-YqE">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -39,7 +39,7 @@
                                                 </constraints>
                                                 <prototypes>
                                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="article_viewcell" id="eN5-xB-fKR" customClass="ArticleViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="28" width="414" height="357.5"/>
+                                                        <rect key="frame" x="0.0" y="24.5" width="414" height="357.5"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="eN5-xB-fKR" id="yaV-qg-v5k">
                                                             <rect key="frame" x="0.0" y="0.0" width="414" height="357.5"/>
@@ -217,7 +217,7 @@ many acpects of your health</string>
                                                 </constraints>
                                                 <prototypes>
                                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="goods_viewcell" id="N2K-lv-Ici" customClass="GoodsViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="28" width="414" height="140"/>
+                                                        <rect key="frame" x="0.0" y="24.5" width="414" height="140"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="N2K-lv-Ici" id="vwi-cF-hC0">
                                                             <rect key="frame" x="0.0" y="0.0" width="414" height="140"/>
@@ -818,7 +818,7 @@ many acpects of your health</string>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ECGViewCell" id="IsN-Tx-B1o" customClass="ECGViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="210.5"/>
+                                        <rect key="frame" x="0.0" y="24.5" width="414" height="210.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="IsN-Tx-B1o" id="Kp1-hJ-tu0">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="210.5"/>
@@ -1849,7 +1849,7 @@ many acpects of your health</string>
                                 <color key="separatorColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="MenuItemCell" id="JLx-d5-8kS" customClass="MenuItemCell" customModule="Club_Afib" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="394" height="50"/>
+                                        <rect key="frame" x="0.0" y="24.5" width="394" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JLx-d5-8kS" id="qKQ-BA-8Xm">
                                             <rect key="frame" x="0.0" y="0.0" width="394" height="50"/>
@@ -2060,14 +2060,14 @@ many acpects of your health</string>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="300" id="Aho-1q-S6q" customClass="CellChart" customModule="Club_Afib" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="414" height="300"/>
+                                                <rect key="frame" x="0.0" y="24.5" width="414" height="300"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Aho-1q-S6q" id="nN3-jb-7ca">
                                                     <rect key="frame" x="0.0" y="0.0" width="414" height="300"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" tag="100" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Jul 24, 2020" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IxY-wO-GDE">
-                                                            <rect key="frame" x="20" y="0.0" width="235" height="20"/>
+                                                            <rect key="frame" x="20" y="0.0" width="374" height="20"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="12"/>
                                                             <color key="textColor" red="0.38431372549999998" green="0.38431372549999998" blue="0.38431372549999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -2242,7 +2242,7 @@ many acpects of your health</string>
                                         </view>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="contact_viewcell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="contact_viewcell" id="TLL-3M-FVn" customClass="ContactViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="78" width="394" height="87"/>
+                                                <rect key="frame" x="0.0" y="74.5" width="394" height="87"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="TLL-3M-FVn" id="TmJ-uS-Zti">
                                                     <rect key="frame" x="0.0" y="0.0" width="394" height="87"/>
@@ -2630,7 +2630,7 @@ many acpects of your health</string>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="chat_history_viewcell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="chat_history_viewcell" id="eb2-dg-CS4" customClass="ChatHistoryCell" customModule="Club_Afib" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="394" height="87"/>
+                                        <rect key="frame" x="0.0" y="24.5" width="394" height="87"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="eb2-dg-CS4" id="4ek-Cv-mVh">
                                             <rect key="frame" x="0.0" y="0.0" width="394" height="87"/>
@@ -2925,7 +2925,7 @@ NR29 3DA</string>
                                                 </constraints>
                                                 <prototypes>
                                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="feedback_viewcell" id="SA3-8U-7NW" customClass="DoctorFeedbackViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="28" width="374" height="70.5"/>
+                                                        <rect key="frame" x="0.0" y="24.5" width="374" height="70.5"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="SA3-8U-7NW" id="nsC-dy-5nC">
                                                             <rect key="frame" x="0.0" y="0.0" width="374" height="70.5"/>
@@ -3221,7 +3221,7 @@ NR29 3DA</string>
                                 <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="200" id="a2M-I2-2kD" customClass="CellEcgCharts" customModule="Club_Afib" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="200"/>
+                                        <rect key="frame" x="0.0" y="24.5" width="414" height="200"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="a2M-I2-2kD" id="0nF-BJ-ev3">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
@@ -4085,7 +4085,7 @@ NR29 3DA</string>
                                                 <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <prototypes>
                                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="healthcategory_viewcell" id="DuP-ql-v2F" customClass="HealthCategoryViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="28" width="374" height="60.5"/>
+                                                        <rect key="frame" x="0.0" y="24.5" width="374" height="60.5"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="DuP-ql-v2F" id="0tH-Dh-yJS">
                                                             <rect key="frame" x="0.0" y="0.0" width="374" height="60.5"/>
@@ -4961,7 +4961,7 @@ NR29 3DA</string>
                                         <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="healthdataadd_viewcell" id="OUp-Kj-HT8" customClass="HealthDataAddViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                                <rect key="frame" x="0.0" y="24.5" width="414" height="44"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="OUp-Kj-HT8" id="Wx7-on-H6y">
                                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -5151,23 +5151,23 @@ NR29 3DA</string>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="bodyweightdata_viewcell" id="dci-3A-134" customClass="BodyWeightDataViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="374" height="41"/>
+                                                <rect key="frame" x="0.0" y="24.5" width="374" height="41.5"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dci-3A-134" id="8lM-CU-0tq">
-                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="41"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="41.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hIw-fa-5dA">
-                                                            <rect key="frame" x="0.0" y="0.0" width="374" height="41"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="374" height="41.5"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="162" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cNN-Yn-bgs">
-                                                                    <rect key="frame" x="10" y="10" width="28" height="21"/>
+                                                                    <rect key="frame" x="10" y="10" width="28" height="21.5"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Jul 17, 7:57 AM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5h5-z4-JCy">
-                                                                    <rect key="frame" x="250" y="10" width="114" height="21"/>
+                                                                    <rect key="frame" x="250" y="10.5" width="114" height="21"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <color key="textColor" red="0.38431372549999998" green="0.38431372549999998" blue="0.38431372549999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <nil key="highlightedColor"/>
@@ -5724,7 +5724,7 @@ NR29 3DA</string>
                                         <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="healthdataadd_viewcell" id="JZD-aW-hqg" customClass="HealthDataAddViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                                <rect key="frame" x="0.0" y="24.5" width="414" height="44"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JZD-aW-hqg" id="mhb-WP-n90">
                                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -5918,7 +5918,7 @@ NR29 3DA</string>
                                         <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="healthdataadd_viewcell" id="oOW-V0-g9D" customClass="HealthDataAddViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                                <rect key="frame" x="0.0" y="24.5" width="414" height="44"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oOW-V0-g9D" id="LnJ-Iz-y56">
                                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -6438,7 +6438,7 @@ NR29 3DA</string>
                                         <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="healthdataadd_viewcell" id="9qv-Iz-RE5" customClass="HealthDataAddViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                                <rect key="frame" x="0.0" y="24.5" width="414" height="44"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="9qv-Iz-RE5" id="PTc-r0-sZf">
                                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -6778,7 +6778,7 @@ NR29 3DA</string>
                                                 </constraints>
                                                 <prototypes>
                                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="postcomment_viewcell" id="0xc-ri-ZEv" customClass="PostCommentViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="28" width="374" height="161.5"/>
+                                                        <rect key="frame" x="0.0" y="24.5" width="374" height="161.5"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0xc-ri-ZEv" id="Eox-z5-MMV">
                                                             <rect key="frame" x="0.0" y="0.0" width="374" height="161.5"/>
@@ -8201,23 +8201,23 @@ NR29 3DA</string>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="alcoholusedata_viewcell" id="J0P-Na-ohe" customClass="AlcoholUseDataViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="374" height="41.5"/>
+                                                <rect key="frame" x="0.0" y="24.5" width="374" height="41"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="J0P-Na-ohe" id="3aK-Fr-eQ6">
-                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="41.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="41"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Efs-iT-cDs">
-                                                            <rect key="frame" x="0.0" y="0.0" width="374" height="41.5"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="374" height="41"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="162" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zul-4l-qH6">
-                                                                    <rect key="frame" x="10" y="10" width="28" height="21.5"/>
+                                                                    <rect key="frame" x="10" y="10" width="28" height="21"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Jul 17, 7:57 AM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BdK-HP-V0r">
-                                                                    <rect key="frame" x="250" y="10.5" width="114" height="21"/>
+                                                                    <rect key="frame" x="250" y="10" width="114" height="21"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <color key="textColor" red="0.38431372549999998" green="0.38431372549999998" blue="0.38431372549999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <nil key="highlightedColor"/>
@@ -8357,7 +8357,7 @@ NR29 3DA</string>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="sleepdata_viewcell" id="DX5-fJ-45r" customClass="SleepDataViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="374" height="58"/>
+                                                <rect key="frame" x="0.0" y="24.5" width="374" height="58"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="DX5-fJ-45r" id="1mc-78-SZA">
                                                     <rect key="frame" x="0.0" y="0.0" width="374" height="58"/>
@@ -8513,23 +8513,23 @@ NR29 3DA</string>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="bloodpressuredata_viewcell" id="Kmi-y8-9pg" customClass="BloodPressureDataViewCell" customModule="Club_Afib" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="374" height="41"/>
+                                                <rect key="frame" x="0.0" y="24.5" width="374" height="41.5"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Kmi-y8-9pg" id="qHa-sk-WM5">
-                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="41"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="41.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ADz-eL-FbF">
-                                                            <rect key="frame" x="0.0" y="0.0" width="374" height="41"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="374" height="41.5"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="162" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pVj-n0-xJu">
-                                                                    <rect key="frame" x="10" y="10" width="28" height="21"/>
+                                                                    <rect key="frame" x="10" y="10" width="28" height="21.5"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Jul 17, 7:57 AM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y1w-sY-O9P">
-                                                                    <rect key="frame" x="250" y="10" width="114" height="21"/>
+                                                                    <rect key="frame" x="250" y="10.5" width="114" height="21"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <color key="textColor" red="0.38431372549999998" green="0.38431372549999998" blue="0.38431372549999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <nil key="highlightedColor"/>
@@ -8919,21 +8919,6 @@ NR29 3DA</string>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="subscription_monthly" width="165" height="165"/>
         <image name="subscription_onetime" width="165" height="165"/>
-        <systemColor name="groupTableViewBackgroundColor">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="groupTableViewBackgroundColor">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="groupTableViewBackgroundColor">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="groupTableViewBackgroundColor">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="groupTableViewBackgroundColor">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
         <systemColor name="groupTableViewBackgroundColor">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
