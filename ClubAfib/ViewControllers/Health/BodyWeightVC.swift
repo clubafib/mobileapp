@@ -222,8 +222,9 @@ class BodyWeightVC: UIViewController {
             for data in dataset {
                 weightData.append(
                     Weight(JSON([
-                        "date": data.0.toString,
-                        "weight": data.1
+                        "uuid": data.0,
+                        "date": data.1.toString,
+                        "weight": data.2
                     ])))
             }
             completion(weightData, nil)

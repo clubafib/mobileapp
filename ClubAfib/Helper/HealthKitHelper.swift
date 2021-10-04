@@ -187,7 +187,7 @@ class HealthKitHelper {
         }
     }
     
-    func getBodyWeightData(completion: @escaping ([(Date, Double)]?, Error?) -> Swift.Void) {
+    func getBodyWeightData(completion: @escaping ([(String, Date, Double)]?, Error?) -> Swift.Void) {
         let calendar = Calendar.current
         
         let now = Date()
@@ -213,38 +213,35 @@ class HealthKitHelper {
             return completion(nil, HealthkitSetupError.dateCalculationerror)
         }
         
-        guard let quantityType = HKObjectType.quantityType(forIdentifier: .bodyMass) else {
+        guard let sampleType = HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass) else {
             return completion(nil, HealthkitSetupError.dataTypeNotAvailable)
         }
         
         // Create the predicate
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
         
-        // Create the query
-        let query = HKStatisticsCollectionQuery(quantityType: quantityType, quantitySamplePredicate: predicate, options: .discreteAverage, anchorDate: anchorDate, intervalComponents: interval)
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: true)
         
-        // Set the results handler
-        query.initialResultsHandler = {
-            query, results, error in
+        // Create the query
+        let query = HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { (query, tmpResult, error) -> Void in
             
-            guard let statsCollection = results else {
+            guard let result = tmpResult else {
                 return completion(nil, error)
             }
-
-            var satisticsData = [(Date, Double)]()
             
-            // Plot the weekly step counts over the past 3 months
-            statsCollection.enumerateStatistics(from: startDate, to: endDate) { statistics, stop in
-                
-                if let quantity = statistics.averageQuantity() {
-                    let date = statistics.startDate
-                    let value = quantity.doubleValue(for: HKUnit.pound())
-                    
-                    satisticsData.append((date, value))
+            if error != nil {
+                return completion(nil, error)
+            }
+            
+            var bodyMassData = [(String, Date, Double)]()
+            
+            for item in result {
+                if let sample = item as? HKDiscreteQuantitySample {
+                    bodyMassData.append((sample.uuid.uuidString, sample.startDate, sample.quantity.doubleValue(for: HKUnit.pound())))
                 }
             }
-
-            completion(satisticsData, error)
+            
+            completion(bodyMassData, nil)
         }
         healthStore.execute(query)
     }
@@ -270,6 +267,46 @@ class HealthKitHelper {
         healthStore.save(sample) { success, error in
             completion(success, error)
         }
+    }
+    
+    func deleteBodyWeight(_ uuid: String, completion: @escaping (Bool, Error?) -> Swift.Void) {
+        guard let quantityType = HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass) else {
+            return completion(false, HealthkitSetupError.dataTypeNotAvailable)
+        }
+        
+        let authorizationStatus = healthStore.authorizationStatus(for: quantityType)
+
+        switch authorizationStatus {
+        case .sharingAuthorized:
+            break
+        case .sharingDenied:
+            print("sharing denied")
+            return completion(false, HealthkitSetupError.dataTypeNotAvailable)
+        default:
+            print("not determined")
+            return completion(false, HealthkitSetupError.dataTypeNotAvailable)
+        }
+        
+        // Create the predicate
+        let predicate = HKQuery.predicateForObject(with: UUID(uuidString: uuid)!)
+        
+        // Create the query
+        let sysQuery = HKSampleQuery(sampleType: quantityType, predicate: predicate, limit: 1, sortDescriptors: nil) { (query, tmpResult, error) -> Void in
+        
+            guard let sample = tmpResult?.first else {
+                return completion(false, error)
+            }
+            
+            if error != nil {
+                return completion(false, error)
+            }
+            
+            self.healthStore.delete(sample, withCompletion: { (success, error) in
+                completion(success, error)
+            })
+        }
+        
+        healthStore.execute(sysQuery)
     }
     
     func getDayStepCounts(completion: @escaping ([(Date, Double)]?, Error?) -> Swift.Void) {
