@@ -1005,6 +1005,7 @@ extension HeartRateVC: ChartViewDelegate {
     }
     
     @objc func handleRefreshControl() {
+        self.lastHighlightedDate = nil
         fetchData(forceRefresh: true)
         self.scvwContent.refreshControl?.endRefreshing()        
     }
