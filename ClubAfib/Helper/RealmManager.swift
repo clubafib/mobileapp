@@ -21,7 +21,13 @@ class RealmManager {
             realm = try Realm(configuration: config)
         }
         catch{
-            print("error on creating Realm")
+            print("Realm schema version may need to be incremented or the data may need to be migrated manually")
+            let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+            do {
+                realm = try Realm(configuration: config)
+            } catch {
+                print("error on creating Realm")
+            }
         }
     }
     
