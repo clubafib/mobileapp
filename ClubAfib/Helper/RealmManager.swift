@@ -17,7 +17,8 @@ class RealmManager {
 
     private init(){
         do{
-            realm = try Realm()
+            let config = Realm.Configuration(schemaVersion: 1)
+            realm = try Realm(configuration: config)
         }
         catch{
             print("error on creating Realm")
