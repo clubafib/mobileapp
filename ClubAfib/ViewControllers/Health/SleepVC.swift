@@ -8,6 +8,7 @@
 
 import UIKit
 import HealthKit
+import SwiftyJSON
 
 class SleepVC: UIViewController {
     
@@ -43,11 +44,12 @@ class SleepVC: UIViewController {
     var yearAsleepEntries = [BarChartDataEntry]()
     
     var ecgAFEntries = [BarChartDataEntry]()
-    var ecgData = [Ecg]()
     var ecgAF = [Ecg]()
     
     var selectedDataType: ChartDataViewType = .Week    
     
+    var dataLoads = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -64,20 +66,18 @@ class SleepVC: UIViewController {
         self.viewAllData.isUserInteractionEnabled = true
         self.viewAllData.addGestureRecognizer(viewAllDataTap)
         
+        self.showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
         getECGData()
         getSleepAnalysis()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)                
-        HealthDataManager.default.getSleepFromDevice()
-    }
-    
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
-            self.getECGData()
+            self.showLoadingProgress(view: self.navigationController?.view)
+            self.dataLoads = 1
             self.getSleepAnalysis()
         }
     }
@@ -195,12 +195,54 @@ class SleepVC: UIViewController {
     }
     
     private func getSleepAnalysis() {
-        let sleepData = HealthDataManager.default.sleepData.sorted(by: { $0.start.compare($1.start) == .orderedAscending })
-        let inBed = sleepData.filter({ $0.type == 0 })
-        let asleep = sleepData.filter({ $0.type == 1 })
-        self.processSleepDataset(inBed, inBed: true)
-        self.processSleepDataset(asleep, inBed: false)
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            self.getSleepAnalysisData() {(sleepData, error) in
+                if (error != nil) {
+                    print(error!)
+                    DispatchQueue.main.async {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        return
+                    }
+                }
+                if (sleepData != nil) {
+                    let inBed = sleepData!.filter({ $0.type == 0 })
+                    let asleep = sleepData!.filter({ $0.type == 1 })
+                    self.processSleepDataset(inBed, inBed: true)
+                    self.processSleepDataset(asleep, inBed: false)
+                    DispatchQueue.main.async {
+                        self.dataLoads = self.dataLoads - 1
+                        if (self.dataLoads == 0) {
+                            self.dismissLoadingProgress(view: self.navigationController?.view)
+                            self.resetChartView()
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func getSleepAnalysisData(completion: @escaping ([Sleep]?, Error?) -> Swift.Void) {
+        HealthKitHelper.default.getSleepAnalysis() {(satistics, error) in
+            if (error != nil) {
+                completion(nil, error)
+                return
+            }
+            guard let dataset = satistics else {
+                completion(nil, NSError(domain:"can't get sleep data", code:0, userInfo:nil))
+                return
+            }
+            var sleepData = [Sleep]()
+            for data in dataset {
+                sleepData.append(
+                    Sleep(JSON([
+                        "uuid": data.0,
+                        "start": data.1.toString,
+                        "end": data.2.toString,
+                        "type": data.3
+                    ])))
+            }
+            completion(sleepData, nil)
+        }
     }
     
     func resetStartDate(){
@@ -325,15 +367,33 @@ class SleepVC: UIViewController {
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getECG { (ecgData, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let ecgData = ecgData else {
+                    print("can't get ECG data")
+                    return
+                }
+                self.processECGDataset(ecgData: ecgData)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
-    private func processECGDataset() {
+    private func processECGDataset(ecgData: [Ecg]) {
         ecgAFEntries.removeAll()
         ecgAF.removeAll()
-        for item in self.ecgData {
+        for item in ecgData {
             if HKElectrocardiogram.Classification(rawValue: item.type) == .atrialFibrillation {
                 ecgAF.append(item)
             }
@@ -343,7 +403,7 @@ class SleepVC: UIViewController {
         }
         self.initEcgEntries(ecgAF)
     }
-    
+
     func initEcgEntries(_ ecgs:[Ecg]) {
         var entry:BarChartDataEntry! = nil
         let offset = 0.3
@@ -508,9 +568,22 @@ class SleepVC: UIViewController {
     }
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
-        selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex + 1) ?? .Week
-        self.processECGDataset()
-        resetChartView()
+        self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
+        HealthKitHelper.default.getECG { (ecgData, error) in
+            
+            if (error != nil) {
+                print(error!)
+            }
+            
+            guard let ecgData = ecgData else {
+                print("can't get ECG data")
+                return
+            }
+            self.processECGDataset(ecgData: ecgData)
+            DispatchQueue.main.async {
+                self.resetChartView()
+            }
+        }
     }
     
     @IBAction func onBackPressed(_ sender: Any) {
@@ -527,18 +600,30 @@ class SleepVC: UIViewController {
     }
     
     @objc func onViewAllDataTapped() {
-        let sleepData = HealthDataManager.default.sleepData.sorted(by: { $0.start.compare($1.start) == .orderedDescending })
-        if sleepData.count == 0 {
-            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
-            return
-        }
-        if dayStartDate != Date.Max() {
-            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "SleepDataListVC") as! SleepDataListVC
-            dataListVC.data = sleepData
-            self.navigationController?.pushViewController(dataListVC, animated: true)
+        self.showLoadingProgress(view: self.navigationController?.view)
+        DispatchQueue.global(qos: .background).async {
+            self.getSleepAnalysisData() {(sleepData, error) in
+                DispatchQueue.main.async {
+                    if (error != nil) {
+                        print(error!)
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        return
+                    }
+                    if sleepData == nil || sleepData!.count == 0 {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
+                        return
+                    }
+                    if self.dayStartDate != Date.Max() {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "SleepDataListVC") as! SleepDataListVC
+                        dataListVC.data = sleepData!
+                        self.navigationController?.pushViewController(dataListVC, animated: true)
+                    }
+                }
+            }
         }
     }
-    
 }
 
 extension SleepVC: ChartViewDelegate {

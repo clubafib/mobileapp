@@ -93,7 +93,6 @@
 		B674CED524E62920005A9B49 /* BloodPressureVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B674CED424E62920005A9B49 /* BloodPressureVC.swift */; };
 		B674CED724E689AB005A9B49 /* BloodPressureAddVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B674CED624E689AB005A9B49 /* BloodPressureAddVC.swift */; };
 		B6756F2624F4FC500097ACB4 /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6756F2524F4FC500097ACB4 /* EditProfileVC.swift */; };
-		B677328A24ED896E00EEAA82 /* HealthDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B677328924ED896E00EEAA82 /* HealthDataManager.swift */; };
 		B677328C24ED8D2F00EEAA82 /* HeartRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B677328B24ED8D2F00EEAA82 /* HeartRate.swift */; };
 		B677328E24ED90BB00EEAA82 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B677328D24ED90BB00EEAA82 /* RealmManager.swift */; };
 		B677329124EDB17300EEAA82 /* PostVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B677329024EDB17300EEAA82 /* PostVC.swift */; };
@@ -295,6 +294,7 @@
 		B6E0A20324F04F2B000CAB2A /* Goods.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E0A20224F04F2B000CAB2A /* Goods.swift */; };
 		B6E0A20524F0506C000CAB2A /* GoodsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E0A20424F0506C000CAB2A /* GoodsViewCell.swift */; };
 		E8C6F597199FE754ADBDAD62 /* Pods_Share.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74258BEBFD1705F2284DD611 /* Pods_Share.framework */; };
+		EF01645526F437F300147B07 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF01645426F437F300147B07 /* DateFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -428,7 +428,6 @@
 		B674CED424E62920005A9B49 /* BloodPressureVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureVC.swift; sourceTree = "<group>"; };
 		B674CED624E689AB005A9B49 /* BloodPressureAddVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodPressureAddVC.swift; sourceTree = "<group>"; };
 		B6756F2524F4FC500097ACB4 /* EditProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
-		B677328924ED896E00EEAA82 /* HealthDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataManager.swift; sourceTree = "<group>"; };
 		B677328B24ED8D2F00EEAA82 /* HeartRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRate.swift; sourceTree = "<group>"; };
 		B677328D24ED90BB00EEAA82 /* RealmManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
 		B677329024EDB17300EEAA82 /* PostVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostVC.swift; sourceTree = "<group>"; };
@@ -647,6 +646,7 @@
 		D39CDD4FB3B17A62A7F7E1A6 /* Pods_ClubAfib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ClubAfib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE5645EFCE1220FFF77E85E2 /* Pods-ClubAfib WatchKit App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ClubAfib WatchKit App.release.xcconfig"; path = "Target Support Files/Pods-ClubAfib WatchKit App/Pods-ClubAfib WatchKit App.release.xcconfig"; sourceTree = "<group>"; };
 		E4BA1DD761A3D7754DC3E257 /* Pods_ClubAfib_WatchKit_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ClubAfib_WatchKit_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF01645426F437F300147B07 /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -853,6 +853,7 @@
 				B62AB62F24C83D2A00AF0C32 /* UIView.swift */,
 				B679CA4724E7862C00792DEE /* JSON.swift */,
 				B679CA4B24E7C1DF00792DEE /* Date.swift */,
+				EF01645426F437F300147B07 /* DateFormatter.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -865,7 +866,6 @@
 				B663CD3324C624DF001D80A7 /* UserInfo.swift */,
 				B663CD3C24C630B5001D80A7 /* Validator.swift */,
 				B62AB63624C8444F00AF0C32 /* HealthKitHelper.swift */,
-				B677328924ED896E00EEAA82 /* HealthDataManager.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -1735,6 +1735,7 @@
 				B6DEBC3124D1C3910032F754 /* RadarChartView.swift in Sources */,
 				B6C7BA4E24F8528B0061925E /* AlcoholUseVC.swift in Sources */,
 				B6DEBC7324D1C3910032F754 /* HorizontalBarHighlighter.swift in Sources */,
+				EF01645526F437F300147B07 /* DateFormatter.swift in Sources */,
 				B67732AC24EE8DF300EEAA82 /* Weight.swift in Sources */,
 				B6DEBCAC24D1C3910032F754 /* Platform+Touch Handling.swift in Sources */,
 				B6DEBC6B24D1C3910032F754 /* IAxisValueFormatter.swift in Sources */,
@@ -1824,7 +1825,6 @@
 				B67AC8D424F0224C00EA0366 /* EnergyBurn.swift in Sources */,
 				B69F13AF24F0623600BDD786 /* GoodsDetailVC.swift in Sources */,
 				B66EC6D724CC88180065CEF9 /* User.swift in Sources */,
-				B677328A24ED896E00EEAA82 /* HealthDataManager.swift in Sources */,
 				B677329C24EDCCBA00EEAA82 /* PostDetailVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1890,7 +1890,7 @@
 				CODE_SIGN_ENTITLEMENTS = Share/ShareDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.1;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 44RPG6J6U3;
 				INFOPLIST_FILE = Share/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -1899,12 +1899,12 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mr.clubafib.share;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -1916,7 +1916,7 @@
 				CODE_SIGN_ENTITLEMENTS = Share/ShareRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.1;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 44RPG6J6U3;
 				INFOPLIST_FILE = Share/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -1925,12 +1925,12 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mr.clubafib.share;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -1938,6 +1938,7 @@
 		B6C0220924C22D3B00DD96E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1999,6 +2000,7 @@
 		B6C0220A24C22D3B00DD96E9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2055,12 +2057,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6479DD399CB0C688E27C2AD8 /* Pods-ClubAfib.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "ClubAfib/Club AfibDebug.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.1;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 44RPG6J6U3;
 				INFOPLIST_FILE = ClubAfib/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -2068,11 +2069,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mr.clubafib;
 				PRODUCT_NAME = "Club Afib";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -2081,12 +2082,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 55F1487176E5983C494F3309 /* Pods-ClubAfib.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ClubAfib/ClubAfib.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.1;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_TEAM = 44RPG6J6U3;
 				INFOPLIST_FILE = ClubAfib/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -2094,11 +2094,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mr.clubafib;
 				PRODUCT_NAME = "Club Afib";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

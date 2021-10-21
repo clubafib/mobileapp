@@ -8,6 +8,7 @@
 
 import UIKit
 import HealthKit
+import SwiftyJSON
 
 class StepsVC: UIViewController {
     @IBOutlet weak var typeSC: UISegmentedControl!
@@ -36,11 +37,12 @@ class StepsVC: UIViewController {
     var monthStepEntries = [BarChartDataEntry]()        
     var yearStepEntries = [BarChartDataEntry]()
     var ecgAFEntries = [BarChartDataEntry]()
-    var ecgData = [Ecg]()
     var ecgAF = [Ecg]()
     
     var selectedDataType: ChartDataViewType = .Week    
     
+    var dataLoads = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -52,20 +54,19 @@ class StepsVC: UIViewController {
         
         initChartView()
         initDates()
+
+        self.showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
         getStepCounts()
         getECGData()
+        
         vwChartECG.isECG = true
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)        
-        HealthDataManager.default.getStepsFromDevice()
-    }
-    
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
-            self.getECGData()
+            self.dataLoads = 1
             self.getStepCounts()
         }
     }
@@ -177,9 +178,37 @@ class StepsVC: UIViewController {
     }
     
     private func getStepCounts() {
-        let stepsData = HealthDataManager.default.stepsData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processDataset(stepsData)
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getStepCounts { steps, error in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let dataset = steps else {
+                    print("can't get steps data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    return
+                }
+                
+                var stepsData = [Steps]()
+                for data in dataset {
+                    stepsData.append(
+                        Steps(JSON([
+                            "date": data.0.toString,
+                            "steps": data.1
+                        ])))
+                }
+                self.processDataset(stepsData)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
     func resetStartDate(){
@@ -319,15 +348,33 @@ class StepsVC: UIViewController {
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getECG { (ecgData, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let ecgData = ecgData else {
+                    print("can't get ECG data")
+                    return
+                }
+                self.processECGDataset(ecgData: ecgData)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
-    private func processECGDataset() {
+    private func processECGDataset(ecgData: [Ecg]) {
         ecgAFEntries.removeAll()
         ecgAF.removeAll()
-        for item in self.ecgData {
+        for item in ecgData {
             if HKElectrocardiogram.Classification(rawValue: item.type) == .atrialFibrillation {
                 ecgAF.append(item)
             }
@@ -499,9 +546,22 @@ class StepsVC: UIViewController {
     }
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
-        selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
-        self.processECGDataset()
-        resetChartView()
+        self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
+        HealthKitHelper.default.getECG { (ecgData, error) in
+            
+            if (error != nil) {
+                print(error!)
+            }
+            
+            guard let ecgData = ecgData else {
+                print("can't get ECG data")
+                return
+            }
+            self.processECGDataset(ecgData: ecgData)
+            DispatchQueue.main.async {
+                self.resetChartView()
+            }
+        }
     }
     
     @IBAction func onBackPressed(_ sender: Any) {

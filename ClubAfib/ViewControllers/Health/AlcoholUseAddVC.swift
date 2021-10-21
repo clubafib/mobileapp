@@ -71,7 +71,8 @@ class AlcoholUseAddVC: UIViewController {
         ApiManager.sharedInstance.addAlcoholUseData((date, alcohol)) { (alcholUseData, errorMsg) in
             self.dismissLoadingProgress(view: self.view)
             if let alcholUseData = alcholUseData {
-                HealthDataManager.default.addAlcoholUseData(alcholUseData)
+                AlcoholUse.setAlcoholUse(alcholUseData)
+                NotificationCenter.default.post(name: Notification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
                 DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
                 }

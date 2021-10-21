@@ -96,37 +96,19 @@ class SleepAddVC: UIViewController {
     }
 
     @IBAction func onAddButtonPressed(_ sender: Any) {
-        self.showLoadingProgress(view: self.view)
-        
         HealthKitHelper.default.saveSleepData(startDate: startDate, endDate : endDate, isAsleep: isAsleep) { data, error in
-            var sleep: (String, Date, Date, Int)
-            if error == nil, let data = data {
-                sleep = data
-            }
-            else {
-                sleep = ("", self.startDate, self.endDate, self.isAsleep ? 1 : 0)
-                print("Error: \(String(describing: error))")
-                if error is HealthKitHelper.HealthkitSetupError {
-                    DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                if error != nil {
+                    print("Error: \(String(describing: error))")
+                    if error is HealthKitHelper.HealthkitSetupError {
                         self.showSimpleAlert(title: "HealthKit Permission Denied", message: "Please go to Settings -> Privacy -> Health -> App and turn on all permissions", complete: nil)
-                    }
-                }
-            }
-            
-            ApiManager.sharedInstance.addSleepData(sleep) { (sleepData, errorMsg) in
-                self.dismissLoadingProgress(view: self.view)
-                if let sleepData = sleepData {
-                    HealthDataManager.default.addSleepData(sleepData)
-                    DispatchQueue.main.async {
-                        self.navigationController?.popViewController(animated: true)
-                    }
-                }
-                else {
-                    print("error on saving blood pressure data: \(errorMsg ?? "")")
-                    DispatchQueue.main.async {
+                    } else {
                         self.showSimpleAlert(title: "Error", message: "Error on adding blood pressure data, please try again later", complete: nil)
                     }
+                } else {
+                    NotificationCenter.default.post(name: Notification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
                 }
+                self.navigationController?.popViewController(animated: true)
             }
         }
     }

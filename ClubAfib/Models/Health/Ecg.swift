@@ -18,15 +18,11 @@ class Ecg : Codable {
     var type: Int = 0
     var date: Date {
         get{
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssXXXXX"
-            return df.date(from: self.dateTxt)!
+            return DateFormatter.standardDateFormatter.date(from: self.dateTxt)!
         }
         
         set(newValue) {
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssXXXXX"
-            self.dateTxt = df.string(from: newValue)
+            self.dateTxt = DateFormatter.standardDateFormatter.string(from: newValue)
         }
     }
     var dateTxt = "1970-01-01 00:00:00"
@@ -125,9 +121,9 @@ class Ecg : Codable {
             let json = try Data(contentsOf: filename)
             let decoder = JSONDecoder()
             if let ret = try? decoder.decode([Ecg].self, from: json) {
-                ret.forEach { (item) in
-                    item.setVoltages()
-                }
+//                ret.forEach { (item) in
+//                    item.setVoltages()
+//                }
                 return ret
             } else {
                 return [Ecg]()
@@ -171,6 +167,7 @@ class Ecg : Codable {
 }
 
 class EcgItem: Object, Codable {
+    @objc dynamic var id = 0
     var time: TimeInterval = 0
     var value: Double = 0
     

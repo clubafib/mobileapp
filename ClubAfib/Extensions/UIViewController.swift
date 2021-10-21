@@ -30,7 +30,7 @@ extension UIViewController{
      @param complete The callback
      @return
      */
-    func showSimpleAlert(title: String?, message: String?, closeButtonTitle: String = NSLocalizedString("ok", comment: ""), complete:(() -> Void)?) -> Void {
+    func showSimpleAlert(title: String?, message: String?, closeButtonTitle: String = NSLocalizedString("OK", comment: ""), complete:(() -> Void)?) -> Void {
         let alertMessage = message != nil ? message! : "Something went wrong, please try again later"
         
         let alertController = UIAlertController(title: title, message: alertMessage, preferredStyle: .alert)

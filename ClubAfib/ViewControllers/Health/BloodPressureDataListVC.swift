@@ -56,19 +56,9 @@ class BloodPressureDataListVC: UIViewController {
                                 self.showSimpleAlert(title: "HealthKit Permission Denied", message: "Please go to Settings -> Privacy -> Health -> App and turn on all permissions", complete: nil)
                             }
                         }
+                    } else {
+                        NotificationCenter.default.post(name: Notification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
                     }
-                }
-            }
-            
-            ApiManager.sharedInstance.deleteBloodPressureData(bloodPressure) { (success, errorMsg) in
-                if success {
-                    try! RealmManager.default.realm.write {
-                        bloodPressure.status = 2 // delete status
-                    }
-                    HealthDataManager.default.deleteBloodPressureData(bloodPressure)
-                }
-                else {
-                    print("error on saving blood pressure data: \(errorMsg ?? "")")
                 }
             }
         }

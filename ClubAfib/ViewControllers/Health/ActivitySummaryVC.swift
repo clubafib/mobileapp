@@ -8,6 +8,7 @@
 
 import UIKit
 import HealthKit
+import SwiftyJSON
 
 class ActivitySummaryVC: UIViewController {
     
@@ -53,10 +54,11 @@ class ActivitySummaryVC: UIViewController {
     var yearStandEntries = [BarChartDataEntry]()
     
     var ecgAFEntries = [BarChartDataEntry]()
-    var ecgData = [Ecg]()
     var ecgAF = [Ecg]()
     
-    var selectedDataType: ChartDataViewType = .Week    
+    var selectedDataType: ChartDataViewType = .Week
+    
+    var dataLoads = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,22 +72,18 @@ class ActivitySummaryVC: UIViewController {
         initChartView()
         initDates()
         
+        self.showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
         getECGData()
         getActivitySummary()
                             
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        HealthDataManager.default.getECGDataFromDevice()
-        HealthDataManager.default.getActivitySummaryFromDevice()
-    }
-    
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
-            self.getECGData()
+            self.showLoadingProgress(view: self.navigationController?.view)
+            self.dataLoads = 1
             self.getActivitySummary()
         }
     }
@@ -214,13 +212,59 @@ class ActivitySummaryVC: UIViewController {
     }
     
     private func getActivitySummary() {
-        let energyBurnedData = HealthDataManager.default.energyBurnedData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        let exerciseData = HealthDataManager.default.exerciseData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        let standData = HealthDataManager.default.standData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processDataset(energyBurnedData, healthType: .ActivityMove)
-        self.processDataset(exerciseData, healthType: .ActivityExercise)
-        self.processDataset(standData, healthType: .ActivityStand)
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getActivitySummary() {(energyBurnedData, exerciseData, standData, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard
+                    let energyBurnedData:[(Date, Double)] = energyBurnedData,
+                    let exerciseData:[(Date, Double)] = exerciseData,
+                    let standData:[(Date, Double)] = standData else {
+                    print("can't get activity summary data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    return
+                }
+                
+                var energyBurnedData1 = [EnergyBurn]()
+                for data in energyBurnedData {
+                    energyBurnedData1.append(
+                        EnergyBurn(JSON([
+                            "date": data.0.toString,
+                            "energy": data.1
+                        ])))
+                }
+                var exerciseData1 = [Exercise]()
+                for data in exerciseData {
+                    exerciseData1.append(
+                        Exercise(JSON([
+                            "date": data.0.toString,
+                            "exercise": data.1
+                        ])))
+                }
+                var standData1 = [Stand]()
+                for data in standData {
+                    standData1.append(
+                        Stand(JSON([
+                            "date": data.0.toString,
+                            "stand": data.1
+                        ])))
+                }
+                
+                self.processDataset(energyBurnedData1, healthType: .ActivityMove)
+                self.processDataset(exerciseData1, healthType: .ActivityExercise)
+                self.processDataset(standData1, healthType: .ActivityStand)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
     func resetStartDate(){
@@ -453,15 +497,34 @@ class ActivitySummaryVC: UIViewController {
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getECG { (ecgData, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let ecgData = ecgData else {
+                    print("can't get ECG data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    return
+                }
+                self.processECGDataset(ecgData: ecgData)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
-    private func processECGDataset() {
+    private func processECGDataset(ecgData: [Ecg]) {
         ecgAFEntries.removeAll()
         ecgAF.removeAll()
-        for item in self.ecgData {
+        for item in ecgData {
             if HKElectrocardiogram.Classification(rawValue: item.type) == .atrialFibrillation {
                 ecgAF.append(item)
             }
@@ -714,9 +777,22 @@ class ActivitySummaryVC: UIViewController {
     }
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
-        selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
-        self.processECGDataset()
-        resetChartView()
+        self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
+        HealthKitHelper.default.getECG { (ecgData, error) in
+            
+            if (error != nil) {
+                print(error!)
+            }
+            
+            guard let ecgData = ecgData else {
+                print("can't get ECG data")
+                return
+            }
+            self.processECGDataset(ecgData: ecgData)
+            DispatchQueue.main.async {
+                self.resetChartView()
+            }
+        }
     }
     
     @IBAction func onBackPressed(_ sender: Any) {

@@ -13,6 +13,7 @@ import RealmSwift
 class Weight: Object, SingleValueHealthData {
     
     @objc dynamic var id = 0
+    @objc dynamic var UUID = ""
     @objc dynamic var date : Date = Date()
     @objc dynamic var weight : Double = 0.0
     @objc dynamic var status = 0
@@ -32,6 +33,7 @@ class Weight: Object, SingleValueHealthData {
     
     init(_ item : JSON){
         self.id                     = item["id"].intValue
+        self.UUID                   = item["uuid"].stringValue
         self.date                   = item["date"].dateValue
         self.weight                 = item["weight"].doubleValue
         self.status                 = item["status"].intValue

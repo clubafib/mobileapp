@@ -72,29 +72,16 @@ class BodyWeightAddVC: UIViewController {
 
     @IBAction func onAddButtonPressed(_ sender: Any) {
         HealthKitHelper.default.saveBodyWeight(weight: weight, forDate: date) { success, error in
-            if !success || error != nil {
-                print("Error: \(String(describing: error))")
-
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                if !success || error != nil {
+                    print("Error: \(String(describing: error))")
                     self.showSimpleAlert(title: "HealthKit Permission Denied", message: "Please go to Settings -> Privacy -> Health -> App and turn on all permissions", complete: nil)
                 }
-            }
-            else {
-                print("Saved: \(success)")
-                
-            }
-        }
-        showLoadingProgress(view: self.view)
-        ApiManager.sharedInstance.addWeightData((date, weight)) { (weightData, errorMsg) in
-            self.dismissLoadingProgress(view: self.view)
-            if let weightData = weightData {
-                HealthDataManager.default.addWeightData(weightData)
-                DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
+                else {
+                    print("Saved: \(success)")
+                    NotificationCenter.default.post(name: Notification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
                 }
-            }
-            else {
-                print("error on saving weight data: \(errorMsg ?? "")")
+                self.navigationController?.popViewController(animated: true)
             }
         }
     }

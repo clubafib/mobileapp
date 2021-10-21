@@ -46,15 +46,18 @@ class BodyWeightDataListVC: UIViewController {
         if index < self.data.count {
             let weight = self.data[index]
             self.data.remove(at: index)
-            ApiManager.sharedInstance.deleteWeightData(weight) { (success, errorMsg) in
-                if success {
-                    try! RealmManager.default.realm.write {
-                        weight.status = 2 // delete status
+            if !weight.UUID.isEmpty {
+                HealthKitHelper.default.deleteBodyWeight(weight.UUID) { success, error in
+                    if let error = error {
+                        print("Error: \(String(describing: error))")
+                        if error is HealthKitHelper.HealthkitSetupError {
+                            DispatchQueue.main.async {
+                                self.showSimpleAlert(title: "HealthKit Permission Denied", message: "Please go to Settings -> Privacy -> Health -> App and turn on all permissions", complete: nil)
+                            }
+                        }
+                    } else {
+                        NotificationCenter.default.post(name: Notification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
                     }
-                    HealthDataManager.default.deleteWeightData(weight)
-                }
-                else {
-                    print("error on saving weight data: \(errorMsg ?? "")")
                 }
             }
         }

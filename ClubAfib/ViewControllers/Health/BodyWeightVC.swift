@@ -8,6 +8,7 @@
 
 import UIKit
 import HealthKit
+import SwiftyJSON
 
 class BodyWeightVC: UIViewController {
     
@@ -39,11 +40,12 @@ class BodyWeightVC: UIViewController {
     var monthWeightEntries = [ChartDataEntry]()
     var yearWeightEntries = [ChartDataEntry]()
     var ecgAFEntries = [BarChartDataEntry]()
-    var ecgData = [Ecg]()
     var ecgAF = [Ecg]()
     
     var selectedDataType: ChartDataViewType = .Week    
         
+    var dataLoads = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -60,22 +62,18 @@ class BodyWeightVC: UIViewController {
         self.viewAllData.isUserInteractionEnabled = true
         self.viewAllData.addGestureRecognizer(viewAllDataTap)
         
+        self.showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
         getECGData()
         getWeights()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        HealthDataManager.default.getHeartRatesFromDevice()
-        HealthDataManager.default.getWeightsFromDevice()
-    }
-    
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
-            self.getECGData()
+            self.showLoadingProgress(view: self.navigationController?.view)
+            self.dataLoads = 1
             self.getWeights()
         }
     }
@@ -187,9 +185,50 @@ class BodyWeightVC: UIViewController {
     }
     
     private func getWeights() {
-        let weightData = HealthDataManager.default.weightData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processDataset(weightData, healthType: .BodyWeight)
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            self.getWeightsData() {(weightData, error) in
+                if (error != nil) {
+                    print(error!)
+                    DispatchQueue.main.async {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        return
+                    }
+                }
+                if (weightData != nil) {
+                    self.processDataset(weightData!, healthType: .BodyWeight)
+                    DispatchQueue.main.async {
+                        self.dataLoads = self.dataLoads - 1
+                        if (self.dataLoads == 0) {
+                            self.dismissLoadingProgress(view: self.navigationController?.view)
+                            self.resetChartView()
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func getWeightsData(completion: @escaping ([Weight]?, Error?) -> Swift.Void) {
+        HealthKitHelper.default.getBodyWeightData() {(satistics, error) in
+            if (error != nil) {
+                completion(nil, error)
+                return
+            }
+            guard let dataset = satistics else {
+                completion(nil, NSError(domain:"can't get weight data", code:0, userInfo:nil))
+                return
+            }
+            var weightData = [Weight]()
+            for data in dataset {
+                weightData.append(
+                    Weight(JSON([
+                        "uuid": data.0,
+                        "date": data.1.toString,
+                        "weight": data.2
+                    ])))
+            }
+            completion(weightData, nil)
+        }
     }
     
     func resetStartDate(){
@@ -371,15 +410,33 @@ class BodyWeightVC: UIViewController {
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getECG { (ecgData, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let ecgData = ecgData else {
+                    print("can't get ECG data")
+                    return
+                }
+                self.processECGDataset(ecgData: ecgData)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
-    private func processECGDataset() {
+    private func processECGDataset(ecgData: [Ecg]) {
         ecgAFEntries.removeAll()
         ecgAF.removeAll()
-        for item in self.ecgData {
+        for item in ecgData {
             if HKElectrocardiogram.Classification(rawValue: item.type) == .atrialFibrillation {
                 ecgAF.append(item)
             }
@@ -560,9 +617,22 @@ class BodyWeightVC: UIViewController {
     }
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
-        selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
-        self.processECGDataset()
-        resetChartView()
+        self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
+        HealthKitHelper.default.getECG { (ecgData, error) in
+            
+            if (error != nil) {
+                print(error!)
+            }
+            
+            guard let ecgData = ecgData else {
+                print("can't get ECG data")
+                return
+            }
+            self.processECGDataset(ecgData: ecgData)
+            DispatchQueue.main.async {
+                self.resetChartView()
+            }
+        }
     }
     
     @IBAction func onBackPressed(_ sender: Any) {
@@ -579,18 +649,30 @@ class BodyWeightVC: UIViewController {
     }
     
     @objc func onViewAllDataTapped() {        
-        let weightData = HealthDataManager.default.weightData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-        if weightData.count == 0 {
-            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
-            return
-        }
-        if dayStartDate != Date.Max() {
-            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "BodyWeightDataListVC") as! BodyWeightDataListVC            
-            dataListVC.data = weightData
-            self.navigationController?.pushViewController(dataListVC, animated: true)
+        self.showLoadingProgress(view: self.navigationController?.view)
+        DispatchQueue.global(qos: .background).async {
+            self.getWeightsData() {(weightData, error) in
+                DispatchQueue.main.async {
+                    if (error != nil) {
+                        print(error!)
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        return
+                    }
+                    if weightData == nil || weightData!.count == 0 {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
+                        return
+                    }
+                    if self.dayStartDate != Date.Max() {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "BodyWeightDataListVC") as! BodyWeightDataListVC
+                        dataListVC.data = weightData!
+                        self.navigationController?.pushViewController(dataListVC, animated: true)
+                    }
+                }
+            }
         }
     }
-    
 }
 
 extension BodyWeightVC: ChartViewDelegate {

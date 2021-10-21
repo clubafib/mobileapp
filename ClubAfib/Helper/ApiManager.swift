@@ -49,36 +49,36 @@ class ApiManager: NSObject {
     let apiAddComment           = "comment"
     let apiReaction             = "reaction"
     
-    let apiGetHeartRateData         = "health/heart_rate"
-    let apiSetHeartRateData         = "health/heart_rate"
-    let apiGetEnergyData            = "health/energy"
-    let apiSetEnergyData            = "health/energy"
-    let apiGetExerciseData          = "health/exercise"
-    let apiSetExerciseData          = "health/exercise"
-    let apiGetStandData             = "health/stand"
-    let apiSetStandData             = "health/stand"
-    let apiGetWeightData            = "health/weight"
-    let apiSetWeightData            = "health/weight"
-    let apiAddWeightData            = "health/weight/add"
-    let apiDeleteWeightData         = "health/weight/delete"
-    let apiGetStepsData             = "health/steps"
-    let apiSetStepsData             = "health/steps"
-    let apiGetSleepData             = "health/sleep"
-    let apiSetSleepData             = "health/sleep"
-    let apiAddSleepData             = "health/sleep/add"
-    let apiDeleteSleepData          = "health/sleep/delete"
+//    let apiGetHeartRateData         = "health/heart_rate"
+//    let apiSetHeartRateData         = "health/heart_rate"
+//    let apiGetEnergyData            = "health/energy"
+//    let apiSetEnergyData            = "health/energy"
+//    let apiGetExerciseData          = "health/exercise"
+//    let apiSetExerciseData          = "health/exercise"
+//    let apiGetStandData             = "health/stand"
+//    let apiSetStandData             = "health/stand"
+//    let apiGetWeightData            = "health/weight"
+//    let apiSetWeightData            = "health/weight"
+//    let apiAddWeightData            = "health/weight/add"
+//    let apiDeleteWeightData         = "health/weight/delete"
+//    let apiGetStepsData             = "health/steps"
+//    let apiSetStepsData             = "health/steps"
+//    let apiGetSleepData             = "health/sleep"
+//    let apiSetSleepData             = "health/sleep"
+//    let apiAddSleepData             = "health/sleep/add"
+//    let apiDeleteSleepData          = "health/sleep/delete"
     let apiGetAlcoholUseData        = "health/alcohol"
     let apiSetAlcoholUseData        = "health/alcohol"
     let apiAddAlcoholUseData        = "health/alcohol/add"
     let apiDeleteAlcoholUseData     = "health/alcohol/delete"
-    let apiGetBloodPressureData     = "health/blood_pressure"
-    let apiSetBloodPressureData     = "health/blood_pressure"
-    let ecgDataUri     = "health/ekg"
-    let ekgDataUri     = "health/ekg"
-    let fileDataUri     = "health/upload"
+//    let apiGetBloodPressureData     = "health/blood_pressure"
+//    let apiSetBloodPressureData     = "health/blood_pressure"
+//    let ecgDataUri     = "health/ekg"
+//    let ekgDataUri     = "health/ekg"
+//    let fileDataUri     = "health/upload"
     
-    let apiAddBloodPressureData     = "health/blood_pressure/add"
-    let apiDeleteBloodPressureData  = "health/blood_pressure/delete"
+//    let apiAddBloodPressureData     = "health/blood_pressure/add"
+//    let apiDeleteBloodPressureData  = "health/blood_pressure/delete"
     
     let apiGetDoctorList        = "doctor"
     let apiGetChatRoom          = "chat"
@@ -695,6 +695,7 @@ class ApiManager: NSObject {
         }
     }
     
+    /*
     // Get Heart Rate data
     func getHeartRateData(_ lastAt:String, complete: @escaping ([HeartRate]?, String?) -> Void) -> Void {
         let param = lastAt.replacingOccurrences(of: " ", with: "%20")
@@ -1279,6 +1280,7 @@ class ApiManager: NSObject {
             }
         }
     }
+    */
     
     // Get AlcoholUse Data
     func getAlcoholUseData(complete: @escaping ([AlcoholUse]?, String?) -> Void) -> Void {
@@ -1404,7 +1406,8 @@ class ApiManager: NSObject {
             }
         }
     }
-    
+
+    /*
     // Get Blood Pressure Data
     func getBloodPressureData(complete: @escaping ([BloodPressure]?, String?) -> Void) -> Void {
         requestWithToken(method: .get, endPoint: apiGetBloodPressureData, params: nil) { (response, error, resoponseCode) in
@@ -1623,6 +1626,7 @@ class ApiManager: NSObject {
             }
         }
     }
+    */
     
     // Get Doctor List
     func getDoctorList(complete: @escaping ([Doctor]?, String?, Bool) -> Void) -> Void {

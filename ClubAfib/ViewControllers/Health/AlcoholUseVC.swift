@@ -43,6 +43,8 @@ class AlcoholUseVC: UIViewController {
     
     var selectedDataType: ChartDataViewType = .Week
     
+    var dataLoads = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -59,20 +61,18 @@ class AlcoholUseVC: UIViewController {
         self.viewAllData.isUserInteractionEnabled = true
         self.viewAllData.addGestureRecognizer(viewAllDataTap)
         
+        self.showLoadingProgress(view: self.navigationController?.view)
+        self.dataLoads = 2
         getECGData()
         getAlcoholUses()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.healthDataChanged), name: NSNotification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        HealthDataManager.default.getECGDataFromDevice()
-    }
-    
     @objc private func healthDataChanged(notification: NSNotification){
         DispatchQueue.main.async {
-            self.getECGData()
+            self.showLoadingProgress(view: self.navigationController?.view)
+            self.dataLoads = 1
             self.getAlcoholUses()
         }
     }
@@ -186,9 +186,24 @@ class AlcoholUseVC: UIViewController {
     }
     
     private func getAlcoholUses() {
-        let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processDataset(alcoholUseData, healthType: .AlcoholUse)
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            ApiManager.sharedInstance.getAlcoholUseData() { (alcoholUses, errorMsg) in
+                if let alcoholUses = alcoholUses {
+                    AlcoholUse.setAlcoholUses(alcoholUses)
+                    self.processDataset(alcoholUses, healthType: .AlcoholUse)
+                    DispatchQueue.main.async {
+                        self.dataLoads = self.dataLoads - 1
+                        if (self.dataLoads == 0) {
+                            self.dismissLoadingProgress(view: self.navigationController?.view)
+                            self.resetChartView()
+                        }
+                    }
+                }
+                else {
+                    print("error on getting alcohol used data: \(errorMsg ?? "")")
+                }
+            }
+        }
     }
     
     func resetStartDate(){
@@ -348,15 +363,34 @@ class AlcoholUseVC: UIViewController {
     }
     
     private func getECGData(){
-        self.ecgData = HealthDataManager.default.ecgData.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self.processECGDataset()
-        self.resetChartView()
+        DispatchQueue.global(qos: .background).async {
+            HealthKitHelper.default.getECG { (ecgData, error) in
+                
+                if (error != nil) {
+                    print(error!)
+                }
+                
+                guard let ecgData = ecgData else {
+                    print("can't get ECG data")
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    return
+                }
+                self.processECGDataset(ecgData: ecgData)
+                DispatchQueue.main.async {
+                    self.dataLoads = self.dataLoads - 1
+                    if (self.dataLoads == 0) {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.resetChartView()
+                    }
+                }
+            }
+        }
     }
     
-    private func processECGDataset() {
+    private func processECGDataset(ecgData: [Ecg]) {
         ecgAFEntries.removeAll()
         ecgAF.removeAll()
-        for item in self.ecgData {
+        for item in ecgData {
             if HKElectrocardiogram.Classification(rawValue: item.type) == .atrialFibrillation {
                 ecgAF.append(item)
             }
@@ -529,9 +563,22 @@ class AlcoholUseVC: UIViewController {
     }
     
     @objc func chartDataViewTypeChanged(segment: UISegmentedControl) {
-        selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
-        self.processECGDataset()
-        resetChartView()
+        self.selectedDataType = ChartDataViewType(rawValue: segment.selectedSegmentIndex) ?? .Day
+        HealthKitHelper.default.getECG { (ecgData, error) in
+            
+            if (error != nil) {
+                print(error!)
+            }
+            
+            guard let ecgData = ecgData else {
+                print("can't get ECG data")
+                return
+            }
+            self.processECGDataset(ecgData: ecgData)
+            DispatchQueue.main.async {
+                self.resetChartView()
+            }
+        }
     }
     
     @IBAction func onBackPressed(_ sender: Any) {
@@ -548,18 +595,28 @@ class AlcoholUseVC: UIViewController {
     }
     
     @objc func onViewAllDataTapped() {
-        let alcoholUseData = HealthDataManager.default.alcoholUseData.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
-        if alcoholUseData.count == 0 {
-            showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
-            return
-        }
-        if dayStartDate != Date.Max() {
-            let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "AlcoholUseDataListVC") as! AlcoholUseDataListVC
-            dataListVC.data = alcoholUseData
-            self.navigationController?.pushViewController(dataListVC, animated: true)
+        self.showLoadingProgress(view: self.navigationController?.view)
+        DispatchQueue.global(qos: .background).async {
+            ApiManager.sharedInstance.getAlcoholUseData() { (alcoholUsesData, errorMsg) in
+                if let alcoholUsesData = alcoholUsesData {
+                    if alcoholUsesData.count == 0 {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        self.showSimpleAlert(title: "Warning", message: "No data has been added by the user.  You can add data using the + found on top right corner of the page.", complete: nil)
+                        return
+                    }
+                    if self.dayStartDate != Date.Max() {
+                        self.dismissLoadingProgress(view: self.navigationController?.view)
+                        let dataListVC = HOME_STORYBOARD.instantiateViewController(withIdentifier: "AlcoholUseDataListVC") as! AlcoholUseDataListVC
+                        dataListVC.data = alcoholUsesData
+                        self.navigationController?.pushViewController(dataListVC, animated: true)
+                    }
+                } else {
+                    self.dismissLoadingProgress(view: self.navigationController?.view)
+                    print("error on getting alcohol used data: \(errorMsg ?? "")")
+                }
+            }
         }
     }
-    
 }
 
 extension AlcoholUseVC: ChartViewDelegate {

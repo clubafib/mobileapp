@@ -187,7 +187,7 @@ class HealthKitHelper {
         }
     }
     
-    func getBodyWeightData(completion: @escaping ([(Date, Double)]?, Error?) -> Swift.Void) {
+    func getBodyWeightData(completion: @escaping ([(String, Date, Double)]?, Error?) -> Swift.Void) {
         let calendar = Calendar.current
         
         let now = Date()
@@ -213,38 +213,35 @@ class HealthKitHelper {
             return completion(nil, HealthkitSetupError.dateCalculationerror)
         }
         
-        guard let quantityType = HKObjectType.quantityType(forIdentifier: .bodyMass) else {
+        guard let sampleType = HKSampleType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass) else {
             return completion(nil, HealthkitSetupError.dataTypeNotAvailable)
         }
         
         // Create the predicate
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
         
-        // Create the query
-        let query = HKStatisticsCollectionQuery(quantityType: quantityType, quantitySamplePredicate: predicate, options: .discreteAverage, anchorDate: anchorDate, intervalComponents: interval)
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: true)
         
-        // Set the results handler
-        query.initialResultsHandler = {
-            query, results, error in
+        // Create the query
+        let query = HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { (query, tmpResult, error) -> Void in
             
-            guard let statsCollection = results else {
+            guard let result = tmpResult else {
                 return completion(nil, error)
             }
-
-            var satisticsData = [(Date, Double)]()
             
-            // Plot the weekly step counts over the past 3 months
-            statsCollection.enumerateStatistics(from: startDate, to: endDate) { statistics, stop in
-                
-                if let quantity = statistics.averageQuantity() {
-                    let date = statistics.startDate
-                    let value = quantity.doubleValue(for: HKUnit.pound())
-                    
-                    satisticsData.append((date, value))
+            if error != nil {
+                return completion(nil, error)
+            }
+            
+            var bodyMassData = [(String, Date, Double)]()
+            
+            for item in result {
+                if let sample = item as? HKDiscreteQuantitySample {
+                    bodyMassData.append((sample.uuid.uuidString, sample.startDate, sample.quantity.doubleValue(for: HKUnit.pound())))
                 }
             }
-
-            completion(satisticsData, error)
+            
+            completion(bodyMassData, nil)
         }
         healthStore.execute(query)
     }
@@ -270,6 +267,46 @@ class HealthKitHelper {
         healthStore.save(sample) { success, error in
             completion(success, error)
         }
+    }
+    
+    func deleteBodyWeight(_ uuid: String, completion: @escaping (Bool, Error?) -> Swift.Void) {
+        guard let quantityType = HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass) else {
+            return completion(false, HealthkitSetupError.dataTypeNotAvailable)
+        }
+        
+        let authorizationStatus = healthStore.authorizationStatus(for: quantityType)
+
+        switch authorizationStatus {
+        case .sharingAuthorized:
+            break
+        case .sharingDenied:
+            print("sharing denied")
+            return completion(false, HealthkitSetupError.dataTypeNotAvailable)
+        default:
+            print("not determined")
+            return completion(false, HealthkitSetupError.dataTypeNotAvailable)
+        }
+        
+        // Create the predicate
+        let predicate = HKQuery.predicateForObject(with: UUID(uuidString: uuid)!)
+        
+        // Create the query
+        let sysQuery = HKSampleQuery(sampleType: quantityType, predicate: predicate, limit: 1, sortDescriptors: nil) { (query, tmpResult, error) -> Void in
+        
+            guard let sample = tmpResult?.first else {
+                return completion(false, error)
+            }
+            
+            if error != nil {
+                return completion(false, error)
+            }
+            
+            self.healthStore.delete(sample, withCompletion: { (success, error) in
+                completion(success, error)
+            })
+        }
+        
+        healthStore.execute(sysQuery)
     }
     
     func getDayStepCounts(completion: @escaping ([(Date, Double)]?, Error?) -> Swift.Void) {
@@ -867,7 +904,7 @@ class HealthKitHelper {
         }
     }
 
-    func getHeartRates(completion: @escaping ([HeartRate]?, Error?) -> Swift.Void) {
+    func getHeartRates(startDate: Date, endDate: Date, completion: @escaping ([HeartRate]?, Error?) -> Swift.Void) {
         if m_bProcessingHR {
             completion(nil, nil)
             return
@@ -879,8 +916,8 @@ class HealthKitHelper {
         }
         
         // Create the query
-                        
-        let query = HKSampleQuery(sampleType: quantityType, predicate: nil, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, samples, error) in
+        let predicateByStartEndDate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [])
+        let query = HKSampleQuery(sampleType: quantityType, predicate: predicateByStartEndDate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, samples, error) in
             if let error = error {
                 completion(nil, error)
                 return
@@ -939,11 +976,21 @@ class HealthKitHelper {
 
     @available(iOS 14.0, *)
     func getECG(completion: @escaping ([Ecg]?, Error?) -> Swift.Void) {
+        let calendar = Calendar.current
+        let now = Date()
+        let startDate = calendar.date(byAdding: .year, value: -1, to: now)!
+        let endDate = now
+        getECG(startDate: startDate, endDate: endDate, completion: completion)
+    }
+    
+    @available(iOS 14.0, *)
+    func getECG(startDate: Date, endDate: Date, completion: @escaping ([Ecg]?, Error?) -> Swift.Void) {
         let ecgType = HKObjectType.electrocardiogramType()
+        let predicateByStartEndDate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [])
         let ecgQuery = HKSampleQuery(sampleType: ecgType,
-                                     predicate: nil,
+                                     predicate: predicateByStartEndDate,
                                      limit: HKObjectQueryNoLimit,
-                                     sortDescriptors: nil) { [self] (query, samples, error) in
+                                     sortDescriptors: nil) { (query, samples, error) in
             
             if let error = error {
                 completion(nil, error)
@@ -955,35 +1002,72 @@ class HealthKitHelper {
                 return
             }
             var ecgs = [Ecg]()
-            let group = DispatchGroup()            
+            for sample in ecgSamples {
+                // exclude low and high inconclusive data per Dr. Maria
+                if sample.classification != .inconclusiveLowHeartRate &&
+                    sample.classification != .inconclusiveHighHeartRate {
+                    let ecg = Ecg()
+                    if let val = sample.averageHeartRate {
+                        ecg.avgHeartRate = val.doubleValue(for: HKUnit(from: "count/min"))
+                    }
+                    ecg.date = sample.endDate
+                    ecg.type = sample.classification.rawValue
+                    ecgs.append(ecg)
+                }
+            }
+            completion(ecgs, nil)
+        }
+        self.healthStore.execute(ecgQuery)
+    }
+    
+    @available(iOS 14.0, *)
+    func getECGDetail(startDate:Date, endDate:Date, completion: @escaping ([Ecg]?, Error?) -> Swift.Void) {
+        let ecgType = HKObjectType.electrocardiogramType()
+        let predicateByStartEndDate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [])
+        let ecgQuery = HKSampleQuery(sampleType: ecgType,
+                                     predicate: predicateByStartEndDate,
+                                     limit: HKObjectQueryNoLimit,
+                                     sortDescriptors: nil) { [self] (query, samples, error) in
+            
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+            
+            guard let ecgSamples = samples as? [HKElectrocardiogram] else {
+                print("*** Unable to convert \(String(describing: samples)) to [HKElectrocardiogram] ***")
+                return
+            }
+            var ecgs = [Ecg]()
+            let group = DispatchGroup()
             for sample in ecgSamples {
                 let ecg = Ecg()
                 if let val = sample.averageHeartRate {
                     ecg.avgHeartRate = val.doubleValue(for: HKUnit(from: "count/min"))
-                }                
+                }
                 ecg.date = sample.endDate
                 ecg.type = sample.classification.rawValue
-                ecgs.append(ecg)                
-                                
+                ecgs.append(ecg)
+                
                 group.enter()
                 let query = HKElectrocardiogramQuery(sample) { (query, result) in
                     switch result {
-                        case .error(let error):
-                            print("error: ", error)
-                            break
-                        case .measurement(let value):
-                            let ecgitem = EcgItem()
-                            if let val = value.quantity(for: .appleWatchSimilarToLeadI) {
-                                ecgitem.value = val.doubleValue(for: HKUnit(from: "mcV"))
-                            }
-                            
-                            ecgitem.time = value.timeSinceSampleStart
-                            ecg.voltages.append(ecgitem)
-                        case .done:
-                            group.leave()
-                            break
-                        default:
-                            break
+                    case .error(let error):
+                        print("error: ", error)
+                        break
+                    case .measurement(let value):
+                        let ecgitem = EcgItem()
+                        if let val = value.quantity(for: .appleWatchSimilarToLeadI) {
+                            ecgitem.value = val.doubleValue(for: HKUnit(from: "mcV"))
+                        }
+                        
+                        ecgitem.time = value.timeSinceSampleStart
+                        ecg.voltages.append(ecgitem)
+                    case .done:
+                        group.leave()
+                        break
+                    default:
+                        break
                     }
                 }
                 healthStore.execute(query)

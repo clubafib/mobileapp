@@ -51,7 +51,8 @@ class AlcoholUseDataListVC: UIViewController {
                     try! RealmManager.default.realm.write {
                         alcoholUse.status = 2 // delete status
                     }
-                    HealthDataManager.default.deleteAlcoholUseData(alcoholUse)
+                    AlcoholUse.setAlcoholUse(alcoholUse)
+                    NotificationCenter.default.post(name: Notification.Name(USER_NOTIFICATION_HEALTHDATA_CHANGED), object: nil)
                 }
                 else {
                     print("error on saving alcoholUse data: \(errorMsg ?? "")")
